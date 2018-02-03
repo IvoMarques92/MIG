@@ -1,17 +1,19 @@
 # MIG
 MIG - Music Interface Generator
 
-# Info
-Universidade do Minho
+## Info
+#### Universidade do Minho
 Sistemas Embebidos e Computadores
+
 MIEEIC
-Authores:
-Cristiano Rodrigues
-Ivo Marques
+
+### Authores:
+- Cristiano Rodrigues
+- Ivo Marques
 
 Project for Raspberry Pi 3 Model B+ with extra hardware
 
-# Problem Statement
+## Problem Statement
 
 Nowadays, and in order to expand and keep up with the fast growth of other technological
 entertainment areas such as video games or virtual and augmented reality, the music industry needs
