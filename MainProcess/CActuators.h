@@ -16,7 +16,7 @@ public:
     /**
      * @param vector vector vector int
      */
-    void setLedMatrix(void vector vector vector int);
+    void setLedMatrix(void vector <vector <int>>);
     
     int getDataLedMatrix();
     
