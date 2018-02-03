@@ -1,3 +1,8 @@
 #Attention
 
-to make the device drivers, it is necessary change the path to buildroot correctly in the Makefile in each folder.
+To make the device drivers, it is necessary change the path to buildroot correctly in the Makefile in each folder.
+
+#Generate Device Driver
+
+To make the DeviceDriver, after edit the makefile, just do make in the path and send the "file".ko to the target(Raspberry Pi 3 Mode B+).
+To use the device driver, inside the targer use the cmd: insmod to insert the module in the kernel.
