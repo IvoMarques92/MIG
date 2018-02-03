@@ -73,4 +73,8 @@ Thumbs.db
 
 #Ignore building directories
 build-DaemonProcess-RPI3-Debug/*
+build-DaemonProcess-Rpi_3-Debug/*
 build-MainProcess-RPI3-Debug/*
+build-MainProcess-Rpi_3-Debug/*
+
+
