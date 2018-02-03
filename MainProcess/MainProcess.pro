@@ -4,6 +4,3 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += main.cpp
-
-target.path = /root
-INSTALLS += target
