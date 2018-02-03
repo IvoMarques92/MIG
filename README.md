@@ -6,8 +6,8 @@ Universidade do Minho
 Sistemas Embebidos e Computadores
 MIEEIC
 Authores:
-        Cristiano Rodrigues
-        Ivo Marques
+Cristiano Rodrigues
+Ivo Marques
 
 Project for Raspberry Pi 3 Model B+ with extra hardware
 
