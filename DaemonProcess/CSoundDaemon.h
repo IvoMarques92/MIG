@@ -1,23 +1,18 @@
-/**
- * Project Untitled
- */
-
-
 #ifndef _CSOUNDDAEMON_H
 #define _CSOUNDDAEMON_H
 
 class CSoundDaemon {
 public: 
     
-    CSoundDaemon static getInstance();
-    
+    static CSoundDaemon* getInstance();
     void initSemaphore();
-    
     void initSpeaker();
+
 private: 
-    CSoundDaemon static instance;
-    
-    void CSoundDaemon();
+    static CSoundDaemon* instance;
+    CSoundDaemon();
+    ~CSoundDaemon();
+
 };
 
 #endif //_CSOUNDDAEMON_H

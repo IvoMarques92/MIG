@@ -1,37 +1,25 @@
-/**
- * Project Untitled
- */
-
-
 #include "CGenerateSound.h"
 
-/**
- * CGenerateSound implementation
- */
-
-
-void CGenerateSound::CGenerateSound() {
+CGenerateSound::CGenerateSound() {
 
 }
 
-/**
- * @return string
- */
+CGenerateSound::~CGenerateSound()
+{
+
+}
+
+
 string CGenerateSound::getPathGeneratedSound() {
     return "";
 }
 
-/**
- * @param vector vector char
- * @return void
- */
-void CGenerateSound::setAbsolutePattern(void vector vector char) {
+
+void CGenerateSound::setAbsolutePattern(vector<vector<char>>) {
     return;
 }
 
-/**
- * @return string
- */
+
 string CGenerateSound::generateSound() {
     return "";
 }

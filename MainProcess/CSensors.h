@@ -1,30 +1,25 @@
-/**
- * Project Untitled
- */
-
-
 #ifndef _CSENSORS_H
 #define _CSENSORS_H
+
+typedef unsigned short int uint16_t;
 
 class CSensors {
 public: 
     
-    void CSensors();
-    
+    static CSensors* getInstance();
     void initSensors();
-    
-    int readCHandSlideSensor();
-    
-    uint16_t readCDistanceSensor();
-    
-    int readCTouchMatrix();
-    
+    int readHandSlideSensor();
+    uint16_t readDistanceSensor();
+    int readTouchMatrix();
     void closeSensors();
-    
-    CSensors static getInstance();
+        
 private: 
-    struct dataSensors;
-    CActuators static instance;
+    struct dataSensors{
+        int i;
+    };
+    CSensors();
+    ~CSensors();
+    static CSensors* instance;
 };
 
 #endif //_CSENSORS_H

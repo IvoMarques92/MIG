@@ -1,44 +1,54 @@
-/**
- * Project Untitled
- */
-
-
 #include "CSpeakerDaemon.h"
 
-/**
- * CSpeakerDaemon implementation
- */
 
+CSpeakerDaemon::CSpeakerDaemon() {
 
-/**
- * @return CSpeakerDaemon
- */
-CSpeakerDaemon CSpeakerDaemon::static getInstance() {
-    return null;
 }
 
-/**
- * @return void
- */
+CSpeakerDaemon::~CSpeakerDaemon()
+{
+
+}
+
+/*******************************************************************************
+* Function Name  : initSpeaker
+* Description    : Initialize Speaker
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : None
+*******************************************************************************/
 void CSpeakerDaemon::initSpeaker() {
     return;
 }
 
-/**
- * @return void
- */
+/*******************************************************************************
+* Function Name  : initSpeaker
+* Description    : Close Speaker
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : None
+*******************************************************************************/
 void CSpeakerDaemon::closeSpeaker() {
     return;
 }
 
-/**
- * @param microData
- * @return int
- */
-int CSpeakerDaemon::wrtieSpeaker(void microData) {
+/*******************************************************************************
+* Function Name  : initSpeaker
+* Description    : Write a PCM wave in the Speaker
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : None
+*******************************************************************************/
+int CSpeakerDaemon::wrtieSpeaker(void* microData) {
     return 0;
 }
 
-void CSpeakerDaemon::CSpeakerDaemon() {
+CSpeakerDaemon* CSpeakerDaemon::instance = 0;
 
+CSpeakerDaemon * CSpeakerDaemon::getInstance()
+{
+    if (instance == 0)
+            instance = new CSpeakerDaemon;
+
+    return instance;
 }

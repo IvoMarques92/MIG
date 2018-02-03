@@ -1,37 +1,23 @@
-/**
- * Project Untitled
- */
-
-
 #ifndef _CLEDMATRIX_H
 #define _CLEDMATRIX_H
 
 #include "CQuadrantRelativePattern.h"
 #include "CRelativePattern.h"
+#include <vector>
 
+using namespace std;
 
 class CLedMatrix: public CQuadrantRelativePattern, public CRelativePattern {
 public: 
-    
-    /**
-     * @param void
-     */
-    void writeLedMatrix(void void);
-    
-    /**
-     * @param vector vector vector int
-     */
-    void setLedMatrix(void vector vector vector int);
-    
-    /**
-     * @param void
-     */
-    vector<vector<vector<int>>> getLedMatrix(void void);
+    static CLedMatrix* getInstance();
+    void writeLedMatrix(void);
+    void setLedMatrix(vector<vector<int>>);
+    vector<vector<int>> getLedMatrix(void);
 private: 
-    vector<vector<int>> Matrix;
-    CLedMatrix static instance;
-    
-    void CLedMatrix();
+    vector<vector<int>> matrix;
+    static CLedMatrix* instance;
+    CLedMatrix();
+    ~CLedMatrix();
 };
 
 #endif //_CLEDMATRIX_H

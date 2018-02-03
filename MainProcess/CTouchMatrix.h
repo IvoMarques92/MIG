@@ -1,26 +1,22 @@
-/**
- * Project Untitled
- */
-
-
 #ifndef _CTOUCHMATRIX_H
 #define _CTOUCHMATRIX_H
 
+#include <vector>
+
+using namespace std;
+
 class CTouchMatrix {
 public: 
+    static CTouchMatrix* getInstance();
+    void initTouchMatrix();
+    void closeTouchMatrix();
+    int readTouchMatrix();
     
-    void initCTouchMatrix();
-    
-    void closeCTouchMatrix();
-    
-    int readCTouchMatrix();
-    
-    CTouchMatrix static getInstance();
 private: 
     vector<int> soundWave;
-    CTouchMatrix static instance;
-    
-    void CTouchMatrix();
+    static CTouchMatrix* instance;
+    CTouchMatrix();
+    ~CTouchMatrix();
 };
 
 #endif //_CTOUCHMATRIX_H

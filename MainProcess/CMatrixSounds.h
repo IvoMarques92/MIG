@@ -1,22 +1,19 @@
-/**
- * Project Untitled
- */
-
-
 #ifndef _CMATRIXSOUNDS_H
 #define _CMATRIXSOUNDS_H
+
+#include <string>
+#include <vector>
+
+using namespace std;
 
 class CMatrixSounds {
 public: 
     
-    void CMatrixSounds();
+    CMatrixSounds();
+    ~CMatrixSounds();
 protected: 
     
-    /**
-     * @param effect
-     * @param column
-     */
-    string getEffects(char effect, vector char column);
+    string getEffects(char effect, vector<char> column);
 private: 
     vector<vector<string>> pattern;
 };

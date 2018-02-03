@@ -1,45 +1,55 @@
-/**
- * Project Untitled
- */
-
-
 #include "CAbsolutePattern.h"
 
-/**
- * CAbsolutePattern implementation
- */
+CAbsolutePattern::CAbsolutePattern() {
 
+}
 
-/**
- * @param absolutePattern
- * @return void
- */
-void CAbsolutePattern::setAbsolutePattern(vector<vector<vector<int>>> absolutePattern) {
+CAbsolutePattern::~CAbsolutePattern()
+{
+
+}
+
+/*******************************************************************************
+* Function Name  : setAbsolutePattern
+* Description    : set the absolute pattern
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : None
+*******************************************************************************/
+void CAbsolutePattern::setAbsolutePattern(vector<vector<int>> absolutePattern) {
     return;
 }
 
-/**
- * @return vector<vector<vector<int>>>
- */
-vector<vector<vector<int>>> CAbsolutePattern::getAbsolutePattern() {
-    return null;
+/*******************************************************************************
+* Function Name  : getAbsolutePattern
+* Description    : Get the absolute pattern
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : None
+*******************************************************************************/
+vector<vector<int>> CAbsolutePattern::getAbsolutePattern() {
+    vector<vector<int>> a;
+    return a;
 }
 
-/**
- * @param absolutePattern
- * @return void
- */
-void CAbsolutePattern::clearAbsolutePattern(vector<vector<vector<int>>> absolutePattern) {
+/*******************************************************************************
+* Function Name  : clearAbsolutePattern
+* Description    : Clear all the absolute pattern
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : None
+*******************************************************************************/
+void CAbsolutePattern::clearAbsolutePattern() {
     return;
 }
 
-/**
- * @return CAbsolutePattern
- */
-CAbsolutePattern CAbsolutePattern::static getInstance() {
-    return null;
+CAbsolutePattern* CAbsolutePattern::instance = 0;
+
+CAbsolutePattern * CAbsolutePattern::getInstance()
+{
+    if (instance == 0)
+            instance = new CAbsolutePattern;
+
+    return instance;
 }
 
-void CAbsolutePattern::CAbsolutePattern() {
-
-}

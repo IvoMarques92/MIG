@@ -19,8 +19,7 @@ SOURCES += main.cpp \
     CRelativePattern.cpp \
     CSensors.cpp \
     CSpeaker.cpp \
-    CTouchMatrix.cpp \
-    main.cpp
+    CTouchMatrix.cpp
 
 target.path = /root
 INSTALLS += target

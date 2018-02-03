@@ -1,64 +1,86 @@
-/**
- * Project Untitled
- */
-
-
 #include "CMig.h"
 
-/**
- * CMig implementation
- */
+CMig::CMig() {
 
+}
 
-/**
- * @return void
- */
+CMig::~CMig()
+{
+
+}
+
+/*******************************************************************************
+* Function Name  : initMigAtuators
+* Description    : Initialize Atuators
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : None
+*******************************************************************************/
 void CMig::initMigAtuators() {
     return;
 }
 
-/**
- * @return void
- */
+/*******************************************************************************
+* Function Name  : initMigSensors
+* Description    : Initialize Mig Sensors
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : None
+*******************************************************************************/
 void CMig::initMigSensors() {
     return;
 }
 
-/**
- * @return void
- */
+/*******************************************************************************
+* Function Name  : initSemaphores
+* Description    : Initialize Semaphores
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : None
+*******************************************************************************/
 void CMig::initSemaphores() {
     return;
 }
 
-/**
- * @return void
- */
+/*******************************************************************************
+* Function Name  : initQueue
+* Description    : Initialize Queue
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : None
+*******************************************************************************/
 void CMig::initQueue() {
     return;
 }
 
-/**
- * @return void
- */
+/*******************************************************************************
+* Function Name  : run
+* Description    : Run  the projects
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : None
+*******************************************************************************/
 void CMig::run() {
     return;
 }
 
-/**
- * @return CMig
- */
-CMig CMig::static getInstance() {
-    return null;
-}
-
-void CMig::CLecs() {
-
-}
-
-/**
- * @return int
- */
-int CMig::initTasks() {
+/*******************************************************************************
+* Function Name  : initThreads
+* Description    : Create All the threads
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : None
+*******************************************************************************/
+int CMig::initThreads() {
     return 0;
+}
+
+CMig* CMig::instance = 0;
+
+CMig * CMig::getInstance()
+{
+    if (instance == 0)
+            instance = new CMig;
+
+    return instance;
 }

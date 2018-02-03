@@ -1,25 +1,21 @@
-/**
- * Project Untitled
- */
-
-
 #ifndef _CDISTANCESENSOR_H
 #define _CDISTANCESENSOR_H
+
+typedef unsigned short int uint16_t;
 
 class CDistanceSensor {
 public: 
     
-    void initCDistanceSensor();
-    
-    void closeCDistanceSensor();
-    
-    uint16_t readCDistanceSensor();
-    
-    CDistanceSensor static getInstance();
+   void initCDistanceSensor();
+   void closeCDistanceSensor();
+   uint16_t readCDistanceSensor();
+   static CDistanceSensor* getInstance();
+
 private: 
-    CDistanceSensor static instance;
-    
-    void CDistanceSensor();
+    static CDistanceSensor* instance;
+    CDistanceSensor();
+    ~CDistanceSensor();
+
 };
 
 #endif //_CDISTANCESENSOR_H

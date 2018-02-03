@@ -1,39 +1,54 @@
-/**
- * Project Untitled
- */
-
-
 #include "CLedMatrix.h"
 
-/**
- * CLedMatrix implementation
- */
+CLedMatrix::CLedMatrix() {
 
+}
 
-/**
- * @param void
- * @return void
- */
-void CLedMatrix::writeLedMatrix(void void) {
+CLedMatrix::~CLedMatrix()
+{
+
+}
+
+/*******************************************************************************
+* Function Name  : writeLedMatrix
+* Description    : write the Led Matrix
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : None
+*******************************************************************************/
+void CLedMatrix::writeLedMatrix(void) {
     return;
 }
 
-/**
- * @param vector vector vector int
- * @return void
- */
-void CLedMatrix::setLedMatrix(void vector vector vector int) {
+/*******************************************************************************
+* Function Name  : setLedMatrix
+* Description    : set the Led Matrix
+* Input          : vector<vector<int>> matrix
+* Output         : None (void)
+* Return		 : None
+*******************************************************************************/
+void CLedMatrix::setLedMatrix(vector<vector<int>> matrix) {
     return;
 }
 
-/**
- * @param void
- * @return vector<vector<vector<int>>>
- */
-vector<vector<vector<int>>> CLedMatrix::getLedMatrix(void void) {
-    return null;
+/*******************************************************************************
+* Function Name  : getLedMatrix
+* Description    : Get the Led Matrix
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : vector<vector<int>>
+*******************************************************************************/
+vector<vector<int>> CLedMatrix::getLedMatrix(void) {
+    vector<vector<int>> a;
+    return a;
 }
 
-void CLedMatrix::CLedMatrix() {
+CLedMatrix* CLedMatrix::instance = 0;
 
+CLedMatrix * CLedMatrix::getInstance()
+{
+    if (instance == 0)
+            instance = new CLedMatrix;
+
+    return instance;
 }

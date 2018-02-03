@@ -1,66 +1,77 @@
-/**
- * Project Untitled
- */
-
-
 #include "CActuators.h"
 
-/**
- * CActuators implementation
- */
+CActuators::CActuators() {
 
+}
 
-/**
- * @return void
- */
+CActuators::~CActuators()
+{
+
+}
+
+/*******************************************************************************
+* Function Name  : initActuators
+* Description    : Initialize Actuators
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : None
+*******************************************************************************/
 void CActuators::initActuators() {
     return;
 }
 
-/**
- * @return void
- */
+/*******************************************************************************
+* Function Name  : closeActuators
+* Description    : Close Actuators
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : None
+*******************************************************************************/
 void CActuators::closeActuators() {
     return;
 }
 
-/**
- * @param vector vector vector int
- * @return void
- */
-void CActuators::setLedMatrix(void vector vector vector int) {
+/*******************************************************************************
+* Function Name  : setLedMatrix
+* Description    : Set LedMatrix
+* Input          : vector<vector<int>> matrix
+* Output         : None (void)
+* Return		 : None
+*******************************************************************************/
+void CActuators::setLedMatrix(vector<vector<int>> matrix) {
     return;
 }
 
-/**
- * @return int
- */
+/*******************************************************************************
+* Function Name  : getDataLedMatrix
+* Description    : Get data of LedMatrix
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : int
+*******************************************************************************/
 int CActuators::getDataLedMatrix() {
     return 0;
 }
 
-/**
- * @param microData
- * @return int
- */
-int CActuators::wrtieSpeaker(void microData) {
+/*******************************************************************************
+* Function Name  : wrtieSpeaker
+* Description    : wrtie wave in the Speaker
+* Input          : void* microData
+* Output         : None (void)
+* Return		 : int
+*******************************************************************************/
+int CActuators::wrtieSpeaker(void* microData) {
     return 0;
 }
 
-/**
- * @return struct
- */
-struct CActuators::getAllData() {
-    return null;
+
+CActuators* CActuators::instance = 0;
+
+CActuators * CActuators::getInstance()
+{
+    if (instance == 0)
+            instance = new CActuators;
+
+    return instance;
 }
 
-/**
- * @return CActuators
- */
-CActuators CActuators::static getInstance() {
-    return null;
-}
-
-void CActuators::CActuators() {
-
-}

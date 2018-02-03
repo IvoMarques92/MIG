@@ -1,25 +1,17 @@
-/**
- * Project Untitled
- */
-
-
 #ifndef _CHANDSLIDESENSOR_H
 #define _CHANDSLIDESENSOR_H
 
 class CHandSlideSensor {
 public: 
-    
+    static CHandSlideSensor*  getInstance();
     void initCHandSlideSensor();
-    
     void closeCHandSlideSensor();
-    
     int readCHandSlideSensor();
-    
-    CHandSlideSensor static getInstance();
+
 private: 
-    CHandSlideSensor static instance;
-    
-    void CHandSlideSensor();
+    static CHandSlideSensor* instance;
+    CHandSlideSensor();
+    ~CHandSlideSensor();
 };
 
 #endif //_CHANDSLIDESENSOR_H

@@ -1,28 +1,19 @@
-/**
- * Project Untitled
- */
-
-
 #ifndef _CSPEAKERDAEMON_H
 #define _CSPEAKERDAEMON_H
 
 class CSpeakerDaemon {
 public: 
     
-    CSpeakerDaemon static getInstance();
+    static CSpeakerDaemon* getInstance();
     
     void initSpeaker();
-    
     void closeSpeaker();
-    
-    /**
-     * @param microData
-     */
-    int wrtieSpeaker(void microData);
+    int wrtieSpeaker(void* microData);
+
 private: 
-    CSpeakerDaemon static instance;
-    
-    void CSpeakerDaemon();
+    static CSpeakerDaemon* instance;
+    CSpeakerDaemon();
+    ~CSpeakerDaemon();
 };
 
 #endif //_CSPEAKERDAEMON_H

@@ -1,34 +1,19 @@
-/**
- * Project Untitled
- */
-
-
 #include "CQuadrantRelativePattern.h"
 
-/**
- * CQuadrantRelativePattern implementation
- */
-
-
-void CQuadrantRelativePattern::CQuadrantRelativePattern() {
+CQuadrantRelativePattern::CQuadrantRelativePattern()
+{
 
 }
 
-void CQuadrantRelativePattern::CQuadrantRelativePattern() {
+CQuadrantRelativePattern::~CQuadrantRelativePattern()
+{
 
 }
 
-/**
- * @return void
- */
 void CQuadrantRelativePattern::writeQuadrant() {
     return;
 }
 
-/**
- * @param int
- * @return void
- */
-void CQuadrantRelativePattern::setQuadrant(void int) {
+void CQuadrantRelativePattern::setQuadrant( int) {
     return;
 }

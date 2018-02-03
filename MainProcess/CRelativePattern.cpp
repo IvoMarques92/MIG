@@ -1,34 +1,32 @@
-/**
- * Project Untitled
- */
-
-
 #include "CRelativePattern.h"
-
-/**
- * CRelativePattern implementation
- */
-
-
-void CRelativePattern::CRelativePattern() {
+CRelativePattern::CRelativePattern()
+{
 
 }
 
-void CRelativePattern::CRelativePattern() {
+CRelativePattern::~CRelativePattern()
+{
 
 }
 
-/**
- * @return void
- */
+/*******************************************************************************
+* Function Name  : writeRelativePattern
+* Description    : Write Relative Pattern
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : None
+*******************************************************************************/
 void CRelativePattern::writeRelativePattern() {
     return;
 }
 
-/**
- * @param vector vector int
- * @return void
- */
-void CRelativePattern::setRelativePattern(void vector vector int) {
+/*******************************************************************************
+* Function Name  : setRelativePattern
+* Description    : set the Relative Pattern
+* Input          : vector<vector<int>> matrix
+* Output         : None (void)
+* Return		 : None
+*******************************************************************************/
+void CRelativePattern::setRelativePattern(vector<vector<int>> matrix) {
     return;
 }

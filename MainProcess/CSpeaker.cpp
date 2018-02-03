@@ -1,23 +1,14 @@
-/**
- * Project Untitled
- */
-
-
 #include "CSpeaker.h"
 
-/**
- * CSpeaker implementation
- */
-
-
-void CSpeaker::CSpeaker() {
+CSpeaker::CSpeaker() {
 
 }
 
-/**
- * @param microData
- * @return int
- */
-int CSpeaker::wrtieSpeaker(void microData) {
+CSpeaker::~CSpeaker()
+{
+
+}
+
+int CSpeaker::wrtieSpeaker(void* microData) {
     return 0;
 }

@@ -1,25 +1,22 @@
-/**
- * Project Untitled
- */
-
-
 #ifndef _CCONVERTWAV_H
 #define _CCONVERTWAV_H
+
+#include <string>
+
+using namespace std;
 
 class CConvertWav {
 public: 
     
-    void CConvertWav();
+    CConvertWav();
+    ~CConvertWav();
     
-    *void getPCM();
+    void* getPCM();
     
-    /**
-     * @param string
-     */
-    void convertWavFile(void string);
+    void convertWavFile(string);
 private: 
     struct headerWav;
-    *void absolutePatternSoundPCM;
+    void* absolutePatternSoundPCM;
     string pathWavFile;
 };
 

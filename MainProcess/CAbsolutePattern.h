@@ -1,32 +1,22 @@
-/**
- * Project Untitled
- */
-
-
 #ifndef _CABSOLUTEPATTERN_H
 #define _CABSOLUTEPATTERN_H
 
+#include <vector>
+
+using namespace std;
+
 class CAbsolutePattern {
 public: 
-    CAbsolutePattern static instance;
-    
-    /**
-     * @param absolutePattern
-     */
-    void setAbsolutePattern(vector<vector<vector<int>>> absolutePattern);
-    
-    vector<vector<vector<int>>> getAbsolutePattern();
-    
-    /**
-     * @param absolutePattern
-     */
-    void clearAbsolutePattern(vector<vector<vector<int>>> absolutePattern);
-    
-    CAbsolutePattern static getInstance();
+    static CAbsolutePattern* getInstance();
+    void setAbsolutePattern(vector<vector<int>> absolutePattern);
+    vector<vector<int>> getAbsolutePattern();
+    void clearAbsolutePattern();
+
 private: 
-    vector<vector<vector<int>>> absolutePattern;
-    
-    void CAbsolutePattern();
+    static CAbsolutePattern* instance;
+    vector<vector<int>> absolutePattern;
+    CAbsolutePattern();
+    ~CAbsolutePattern();
 };
 
 #endif //_CABSOLUTEPATTERN_H

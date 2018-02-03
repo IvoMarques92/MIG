@@ -1,27 +1,21 @@
-/**
- * Project Untitled
- */
-
-
 #ifndef _CRELATIVEPATTERN_H
 #define _CRELATIVEPATTERN_H
 
+#include <vector>
+
+using namespace std;
+
 class CRelativePattern {
 public: 
-    
-    void CRelativePattern();
-    
-    void CRelativePattern();
+    CRelativePattern();
+    ~CRelativePattern();
+
 protected: 
-    
     void writeRelativePattern();
-    
-    /**
-     * @param vector vector int
-     */
-    void setRelativePattern(void vector vector int);
+    void setRelativePattern(vector<vector<int>>);
+
 private: 
-    vector<vector<int>> 2DMatrix;
+    vector<vector<int>> matrix;
 };
 
 #endif //_CRELATIVEPATTERN_H

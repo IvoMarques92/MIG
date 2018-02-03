@@ -1,36 +1,43 @@
-/**
- * Project Untitled
- */
-
-
 #include "CSoundDaemon.h"
 
-/**
- * CSoundDaemon implementation
- */
 
+CSoundDaemon::CSoundDaemon() {
 
-/**
- * @return CSoundDaemon
- */
-CSoundDaemon CSoundDaemon::static getInstance() {
-    return null;
 }
 
-/**
- * @return void
- */
+CSoundDaemon::~CSoundDaemon()
+{
+
+}
+
+/*******************************************************************************
+* Function Name  : initSemaphores
+* Description    : Initialize all semaphores
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : None
+*******************************************************************************/
 void CSoundDaemon::initSemaphore() {
     return;
 }
 
-/**
- * @return void
- */
+/*******************************************************************************
+* Function Name  : initSpeaker
+* Description    : Initialize Speaker
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : None
+*******************************************************************************/
 void CSoundDaemon::initSpeaker() {
     return;
 }
 
-void CSoundDaemon::CSoundDaemon() {
+CSoundDaemon* CSoundDaemon::instance = 0;
 
+CSoundDaemon * CSoundDaemon::getInstance()
+{
+    if (instance == 0)
+            instance = new CSoundDaemon;
+
+    return instance;
 }

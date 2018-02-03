@@ -1,43 +1,54 @@
-/**
- * Project Untitled
- */
-
-
 #include "CDistanceSensor.h"
 
-/**
- * CDistanceSensor implementation
- */
+CDistanceSensor::CDistanceSensor() {
 
+}
 
-/**
- * @return void
- */
+CDistanceSensor::~CDistanceSensor()
+{
+
+}
+
+/*******************************************************************************
+* Function Name  : initCDistanceSensor
+* Description    : Initialize distance sensor
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : None
+*******************************************************************************/
 void CDistanceSensor::initCDistanceSensor() {
     return;
 }
 
-/**
- * @return void
- */
+/*******************************************************************************
+* Function Name  : closeCDistanceSensor
+* Description    : Close distance sensor
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : None
+*******************************************************************************/
 void CDistanceSensor::closeCDistanceSensor() {
     return;
 }
 
-/**
- * @return uint16_t
- */
+/*******************************************************************************
+* Function Name  : readCDistanceSensor
+* Description    : Read distance sensor
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : None
+*******************************************************************************/
 uint16_t CDistanceSensor::readCDistanceSensor() {
-    return null;
+    return 0;
 }
 
-/**
- * @return CDistanceSensor
- */
-CDistanceSensor CDistanceSensor::static getInstance() {
-    return null;
+CDistanceSensor* CDistanceSensor::instance = 0;
+
+CDistanceSensor * CDistanceSensor::getInstance()
+{
+    if (instance == 0)
+            instance = new CDistanceSensor;
+
+    return instance;
 }
 
-void CDistanceSensor::CDistanceSensor() {
-
-}

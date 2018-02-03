@@ -1,24 +1,14 @@
-/**
- * Project Untitled
- */
-
-
 #include "CMatrixSounds.h"
 
-/**
- * CMatrixSounds implementation
- */
-
-
-void CMatrixSounds::CMatrixSounds() {
+CMatrixSounds::CMatrixSounds() {
 
 }
 
-/**
- * @param effect
- * @param column
- * @return string
- */
-string CMatrixSounds::getEffects(char effect, vector char column) {
+CMatrixSounds::~CMatrixSounds()
+{
+
+}
+
+string CMatrixSounds::getEffects(char effect, vector<char> column) {
     return "";
 }

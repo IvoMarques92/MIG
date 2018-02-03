@@ -1,30 +1,20 @@
-/**
- * Project Untitled
- */
-
-
 #include "CConvertWav.h"
 
-/**
- * CConvertWav implementation
- */
-
-
-void CConvertWav::CConvertWav() {
+CConvertWav::CConvertWav() {
 
 }
 
-/**
- * @return *void
- */
-*void CConvertWav::getPCM() {
-    return null;
+CConvertWav::~CConvertWav()
+{
+
 }
 
-/**
- * @param string
- * @return void
- */
-void CConvertWav::convertWavFile(void string) {
+
+void* CConvertWav::getPCM() {
+    return nullptr;
+}
+
+
+void CConvertWav::convertWavFile(string pathNameFile) {
     return;
 }
