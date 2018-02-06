@@ -1,6 +1,14 @@
 #include "CMig.h"
+#include "CSensors.h"
+#include "CActuators.h"
+
+#include <iostream>
+
+using namespace std;
 
 CMig::CMig() {
+
+    cout << "constr MIG" << endl;
 
 }
 
@@ -17,6 +25,10 @@ CMig::~CMig()
 * Return		 : None
 *******************************************************************************/
 void CMig::initMigAtuators() {
+
+    CActuators* actuators = CActuators::getInstance();
+    actuators->initActuators();
+
     return;
 }
 
@@ -28,6 +40,10 @@ void CMig::initMigAtuators() {
 * Return		 : None
 *******************************************************************************/
 void CMig::initMigSensors() {
+
+    CSensors* sensors = CSensors::getInstance();
+    sensors->initSensors();
+
     return;
 }
 

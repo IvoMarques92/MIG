@@ -15,7 +15,7 @@ public:
     ~CGenerateSound();
     string getPathGeneratedSound();
     void setAbsolutePattern(vector<vector<char>>);
-    string generateSound();
+    string generateSound(unsigned char);
 
 private: 
     string pathWavAbsolutePatternFIle;

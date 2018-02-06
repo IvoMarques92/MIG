@@ -13,7 +13,7 @@ public:
     ~CMatrixSounds();
 protected: 
     
-    string getEffects(char effect, vector<char> column);
+    string getEffects(unsigned char effect, vector<char> column);
 private: 
     vector<vector<string>> pattern;
 };

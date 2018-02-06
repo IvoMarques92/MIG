@@ -38,4 +38,5 @@ HEADERS += \
     CRelativePattern.h \
     CSensors.h \
     CSpeaker.h \
-    CTouchMatrix.h
+    CTouchMatrix.h \
+    main.h

@@ -1,7 +1,11 @@
 #include "CSensors.h"
 
-CSensors::CSensors() {
+#include <iostream>
 
+using namespace std;
+
+CSensors::CSensors() {
+cout << "constr CSensors" << endl;
 }
 
 CSensors::~CSensors()

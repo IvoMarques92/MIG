@@ -8,13 +8,13 @@ using namespace std;
 class CAbsolutePattern {
 public: 
     static CAbsolutePattern* getInstance();
-    void setAbsolutePattern(vector<vector<int>> absolutePattern);
-    vector<vector<int>> getAbsolutePattern();
+    void setAbsolutePattern(vector<vector<char>>);
+    vector<vector<char>> getAbsolutePattern();
     void clearAbsolutePattern();
 
 private: 
     static CAbsolutePattern* instance;
-    vector<vector<int>> absolutePattern;
+    vector<vector<char>> absolutePattern;
     CAbsolutePattern();
     ~CAbsolutePattern();
 };

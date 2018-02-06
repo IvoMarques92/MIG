@@ -1,11 +1,32 @@
 #include "CAbsolutePattern.h"
 
+using namespace std;
+
 CAbsolutePattern::CAbsolutePattern() {
 
+    /*  Allocate memory and Initialize the absolutePattern Matrix
+                { 0, 0, 0, 0, 0, 0, 0, 0}
+                { 0, 0, 0, 0, 0, 0, 0, 0}
+                { 0, 0, 0, 0, 0, 0, 0, 0}
+                { 0, 0, 0, 0, 0, 0, 0, 0}
+                { 0, 0, 0, 0, 0, 0, 0, 0}
+                { 0, 0, 0, 0, 0, 0, 0, 0}
+                { 0, 0, 0, 0, 0, 0, 0, 0}
+                { 0, 0, 0, 0, 0, 0, 0, 0}
+    */
+
+    absolutePattern.resize(8);
+    for ( int i = 0 ; i < 8 ; i++ )
+        absolutePattern[i].resize(8);
 }
 
 CAbsolutePattern::~CAbsolutePattern()
 {
+
+    /*deallocate the matrix absolutePattern*/
+    for ( int i = 0 ; i < 8 ; i++ )
+        vector<char>().swap(absolutePattern[i]);
+    vector<vector<char>>().swap(absolutePattern);
 
 }
 
@@ -16,7 +37,9 @@ CAbsolutePattern::~CAbsolutePattern()
 * Output         : None (void)
 * Return		 : None
 *******************************************************************************/
-void CAbsolutePattern::setAbsolutePattern(vector<vector<int>> absolutePattern) {
+void CAbsolutePattern::setAbsolutePattern(vector<vector<char>> absolutePatternIN) {
+
+    absolutePattern = absolutePatternIN;
     return;
 }
 
@@ -27,9 +50,8 @@ void CAbsolutePattern::setAbsolutePattern(vector<vector<int>> absolutePattern) {
 * Output         : None (void)
 * Return		 : None
 *******************************************************************************/
-vector<vector<int>> CAbsolutePattern::getAbsolutePattern() {
-    vector<vector<int>> a;
-    return a;
+vector<vector<char>> CAbsolutePattern::getAbsolutePattern() {
+    return absolutePattern;
 }
 
 /*******************************************************************************
@@ -40,6 +62,10 @@ vector<vector<int>> CAbsolutePattern::getAbsolutePattern() {
 * Return		 : None
 *******************************************************************************/
 void CAbsolutePattern::clearAbsolutePattern() {
+
+    for ( int i = 0 ; i < 8 ; i++ )
+        for ( int j = 0 ; j < 8 ; j++ )
+            absolutePattern[i][j] = 0;
     return;
 }
 
