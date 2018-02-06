@@ -32,23 +32,24 @@ int main()
     Mig->initSemaphores();
     Mig->run();
 
-//    CGenerateSound * sound = new CGenerateSound();
+    /**+++++++++++++++++test of the CGenerateSound+++++++++++++++++*/
+    CGenerateSound * sound = new CGenerateSound();
 
-//    vector<vector<char>> absoluteMatrix;
+    vector<vector<char>> absoluteMatrix;
 
-//    absoluteMatrix.resize(8);
-//    for ( int i = 0 ; i < 8 ; i++ )
-//        absoluteMatrix[i].resize(8);
+    absoluteMatrix.resize(8);
+    for ( int i = 0 ; i < 8 ; i++ )
+        absoluteMatrix[i].resize(8);
 
-//    for(int i = 0; i < 8; i++)
-//        for(int j = 0; j < 8; j++)
-//    absoluteMatrix[i][j] = 1;
+    for(int i = 0; i < 8; i++)
+        for(int j = 0; j < 8; j++)
+    absoluteMatrix[i][j] = 1;
 
 
-//    sound->setAbsolutePattern(absoluteMatrix);
+    sound->setAbsolutePattern(absoluteMatrix);
 
-//    sound->generateSound(0);
-
+    sound->generateSound(0);
+    /**+++++++++++++END of test of the CGenerateSound+++++++++++++++++*/
     cout << "Mig was initialize" << endl;
     return 0;
     //while(1);
