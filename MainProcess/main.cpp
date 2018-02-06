@@ -15,10 +15,8 @@
 #include <iostream>
 #include "CMig.h"
 
-
-#include "CMatrixSounds.h"
-
-#include "CGenerateSound.h"
+#include "CLedMatrix.h"
+#include "vector"
 
 using namespace std;
 
@@ -32,24 +30,29 @@ int main()
     Mig->initSemaphores();
     Mig->run();
 
-    /**+++++++++++++++++test of the CGenerateSound+++++++++++++++++*/
-    CGenerateSound * sound = new CGenerateSound();
+    /**+++++++++++++++++test CLedMatrix+++++++++++++++++++++++++++++++*/
+    CLedMatrix * matrix = CLedMatrix::getInstance();
 
-    vector<vector<char>> absoluteMatrix;
+    vector<vector<char>> ma;
 
-    absoluteMatrix.resize(8);
-    for ( int i = 0 ; i < 8 ; i++ )
-        absoluteMatrix[i].resize(8);
+    ma.resize(8);
+    for(int c = 0; c < 8; c++)
+    {
+        ma[c].resize(8);
+        for(int i = 0; i < 8; i++)
+        {
+            ma[c][i] = c+i;
+        }
+    }
 
-    for(int i = 0; i < 8; i++)
-        for(int j = 0; j < 8; j++)
-    absoluteMatrix[i][j] = 1;
+    matrix->setLedMatrix(ma);
 
+    matrix->writeLedMatrix();
 
-    sound->setAbsolutePattern(absoluteMatrix);
-
-    sound->generateSound(0);
     /**+++++++++++++END of test of the CGenerateSound+++++++++++++++++*/
+
+
+
     cout << "Mig was initialize" << endl;
     return 0;
     //while(1);
