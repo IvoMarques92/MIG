@@ -13,8 +13,5 @@ SOURCES += main.cpp \
 target.path = /root
 INSTALLS += target
 
-HEADERS += \
-    Headers/CSoundDaemon.h \
-    Headers/CSpeakerDaemon.h \
-    CSoundDaemon.h \
-    CSpeakerDaemon.h
+HEADERS += CSoundDaemon.h \
+           CSpeakerDaemon.h
