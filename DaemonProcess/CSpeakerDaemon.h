@@ -36,7 +36,7 @@ private:
     string device;                        /* playback device */
     string shmFile;
     string semFile;
-    short int *wavData;
+    char *wavData;
     snd_pcm_t *handle;
     snd_pcm_sframes_t frames;
     int sizeWav;

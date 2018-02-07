@@ -49,10 +49,11 @@ int main()
     speaker->initSpeaker();
 
     while (1) {
+    syslog(LOG_INFO,"teste Inicio 1");
 
     speaker->sharedMemory();
     speaker->wrtieSpeaker();
-
+    syslog(LOG_INFO,"teste 4");
 
     }
     speaker->closeSpeaker();
