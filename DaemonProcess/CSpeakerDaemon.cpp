@@ -43,7 +43,6 @@ void CSpeakerDaemon::initSpeaker() {
 void CSpeakerDaemon::closeSpeaker() {
 
     snd_pcm_close(handle);
-
     return;
 }
 
@@ -72,23 +71,23 @@ int CSpeakerDaemon::wrtieSpeaker() {
 *******************************************************************************/
 void CSpeakerDaemon::sharedMemory()
 {
-    static char* shmptr, *ptr, aux;
-    static unsigned int shmdes, index;
-    static sem_t *sDaemon;
-    static int count = 0;
-    static int size;;
+    unsigned int shmdes;
+    sem_t *sDaemon;
+    char* shmptr;
+    char *ptr;
+    int size;;
 
-        /* Open the shared memory object */
-        if ( (shmdes = shm_open(shmFile.c_str(), O_RDWR, 0)) == -1 ) {
-            syslog(LOG_INFO,"shm_open failure");
-            exit(-1);
-        }
+    /* Open the shared memory object */
+    if ( (shmdes = shm_open(shmFile.c_str(), O_RDWR, 0)) == -1 ) {
+        syslog(LOG_INFO,"shm_open failure");
+        exit(-1);
+    }
 
-        sharedMemorySize = 4096 * sysconf(_SC_PAGE_SIZE);
-        if((shmptr = (char *) mmap(0, sharedMemorySize, PROT_WRITE|PROT_READ, MAP_SHARED,shmdes,0)) == (caddr_t) -1){
-            syslog(LOG_INFO,"mmap failure");
-            exit(-1);
-         }
+    sharedMemorySize = 4096 * sysconf(_SC_PAGE_SIZE);
+    if((shmptr = (char *) mmap(0, sharedMemorySize, PROT_WRITE|PROT_READ, MAP_SHARED,shmdes,0)) == (caddr_t) -1){
+        syslog(LOG_INFO,"mmap failure");
+        exit(-1);
+     }
 
     /* Open the Semaphore */
     sDaemon = sem_open(semFile.c_str(), 0, 0644, 0);
@@ -100,29 +99,29 @@ void CSpeakerDaemon::sharedMemory()
     /* Lock the semaphore */
     if(!sem_wait(sDaemon)){
        /* Access to the shared memory area */
+
         ptr = (char *)&size;
-       *ptr++ = shmptr[0];
-       *ptr++ = shmptr[1];
-       *ptr++ = shmptr[2];
-       *ptr =   shmptr[3];
-         sizeWav = size;
+        *ptr++ = shmptr[0];
+        *ptr++ = shmptr[1];
+        *ptr++ = shmptr[2];
+        *ptr =   shmptr[3];
+        sizeWav = size;
 
-       delete wavData; // delete the last PCM data
+        delete wavData; // delete the last PCM data
 
-       wavData = new char[sizeWav];
-       for(index = 4; index < sizeWav + 4; index++)
+        wavData = new char[sizeWav];
+        for(int index = 4; index < sizeWav + 4; index++)
            wavData[index - 4] = shmptr[index];
 
-       /* Release the semaphore lock */
-       sem_post(sDaemon);
+        /* Release the semaphore lock */
+        sem_post(sDaemon);
     }
-syslog(LOG_INFO,"teste 3");
+
     munmap(shmptr, sharedMemorySize);
     /* Close the shared memory object */
     close(shmdes);
     /* Close the Semaphore */
-   sem_close(sDaemon);
-    //sem_unlink(semFile.c_str());
+    sem_close(sDaemon);
 }
 
 

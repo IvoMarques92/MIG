@@ -1,8 +1,3 @@
-#include <iostream>
-
-using namespace std;
-
-
 #include "CSpeakerDaemon.h"
 
 int main()
@@ -43,19 +38,14 @@ int main()
     close(STDERR_FILENO);
 
     /* service implementation */
-
     CSpeakerDaemon * speaker = CSpeakerDaemon::getInstance();
-
     speaker->initSpeaker();
 
     while (1) {
-    syslog(LOG_INFO,"teste Inicio 1");
-
-    speaker->sharedMemory();
-    speaker->wrtieSpeaker();
-    syslog(LOG_INFO,"teste 4");
-
+        speaker->sharedMemory();
+        speaker->wrtieSpeaker();
     }
     speaker->closeSpeaker();
+    syslog(LOG_INFO,"teste");
     exit(EXIT_SUCCESS);
 }
