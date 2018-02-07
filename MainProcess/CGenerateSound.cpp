@@ -40,6 +40,33 @@ void CGenerateSound::setAbsolutePattern(vector<vector<char>> absolutePattern) {
     return;
 }
 
+void CGenerateSound::changeSpeed(int speed)
+{
+    if(!speed)
+    {
+
+    }
+    else
+    {
+
+    }
+    return;
+
+}
+
+void CGenerateSound::changeTempo(int tempo)
+{
+    if(!tempo)
+    {
+
+    }
+    else
+    {
+
+    }
+    return;
+}
+
 /*******************************************************************************
 * Function Name  : generateSound
 * Description    : This function accordly with the effect, add and concatenate
@@ -67,7 +94,7 @@ string CGenerateSound::generateSound(unsigned char effect) {
     soxConc = "sox " + columns + " /root/sounds/absoluteMatrixSounds/soundEffect" + to_string(effect) + ".wav";
     system(soxConc.c_str());
 
-    pathWavAbsolutePatternFIle = " /root/sounds/absoluteMatrixSounds/soundEffect" + to_string(effect) + ".wav";
+    pathWavAbsolutePatternFIle = "/root/sounds/absoluteMatrixSounds/soundEffect" + to_string(effect) + ".wav";
 
     return pathWavAbsolutePatternFIle;
 }

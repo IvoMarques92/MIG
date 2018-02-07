@@ -15,6 +15,8 @@ public:
     ~CGenerateSound();
     string getPathGeneratedSound();
     void setAbsolutePattern(vector<vector<char>>);
+    void changeSpeed(int);
+    void changeTempo(int);
     string generateSound(unsigned char);
 
 private: 
