@@ -22,6 +22,8 @@ public:
     static CLedMatrix* getInstance();
     void writeLedMatrix(void);
     void setLedMatrix(vector<vector<char>>);
+    void setQuadr(int x, int y);
+    int getQuadr();
     vector<vector<char>> getLedMatrix(void);
 private: 
     vector<vector<char>> matrix;
