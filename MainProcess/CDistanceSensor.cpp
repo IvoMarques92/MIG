@@ -11,6 +11,16 @@ CDistanceSensor::~CDistanceSensor()
 {
 
 }
+
+/*******************************************************************************
+* Function Name  : startReadCDistanceSensor
+* Description    : Start the read from the Distance Sensor. To read the value, first
+*                   give 1.25ms to make the acquisition, after call the function
+*                   readCDistanceSensor().
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : None
+*******************************************************************************/
 void CDistanceSensor::startReadCDistanceSensor()
 {
     uint8_t writeBuffer[] = {1,                     //config register -> from pag.28 Datasheet ADS1115
@@ -40,10 +50,13 @@ void CDistanceSensor::startReadCDistanceSensor()
 
 /*******************************************************************************
 * Function Name  : readCDistanceSensor
-* Description    : Read distance sensor
+* Description    : Read distance sensor, the function startReadCDistanceSensor()
+*                   needs to be called before this function, and between the function
+*                   startReadCDistanceSensor() and readCDistanceSensor() needs 1.25ms,
+*                   because the ADC needs time to make the acquisition
 * Input          : None (void)
 * Output         : None (void)
-* Return		 : None
+* Return		 : distance (float)
 *******************************************************************************/
 float CDistanceSensor::readCDistanceSensor() {
     readBuffer[0] = 0;
@@ -69,6 +82,25 @@ float CDistanceSensor::readCDistanceSensor() {
 }
 
 CDistanceSensor* CDistanceSensor::instance = 0;
+
+/*******************************************************************************
+* Function Name  : getDistanceCDistanceSensor()
+* Description    : Read distance sensor, this function already make the delay
+*                   between the function startReadCDistanceSensor() and the function
+*                   readCDistanceSensor().
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : distance (float)
+*******************************************************************************/
+float CDistanceSensor::getDistanceCDistanceSensor()
+{
+    float aux;
+    startReadCDistanceSensor();
+    //1.25ms delay to make the conversion and send from adc to uC
+    usleep(1250);
+    aux = readCDistanceSensor();
+    return aux;
+}
 
 CDistanceSensor * CDistanceSensor::getInstance()
 {

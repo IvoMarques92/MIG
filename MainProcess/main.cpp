@@ -35,11 +35,7 @@ int main()
     CDistanceSensor * distancia = CDistanceSensor::getInstance();
     float aux;
     while(1) {
-
-    distancia->startReadCDistanceSensor();
-    //1.25ms de delay
-    usleep(1250);
-    aux = distancia->readCDistanceSensor();
+    aux = distancia->getDistanceCDistanceSensor();
     cout << "distance: " << aux << "Volts" << endl;
 
     sleep(2);

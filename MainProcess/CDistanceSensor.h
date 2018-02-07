@@ -18,15 +18,16 @@ typedef unsigned short int uint16_t;
 
 class CDistanceSensor {
 public: 
-
-   void startReadCDistanceSensor();
-   float readCDistanceSensor();
+   float getDistanceCDistanceSensor();
    static CDistanceSensor* getInstance();
 
 private:
     static CDistanceSensor* instance;
     CDistanceSensor();
     ~CDistanceSensor();
+
+    void startReadCDistanceSensor();
+    float readCDistanceSensor();
 
     float voltsPerBit;
 
