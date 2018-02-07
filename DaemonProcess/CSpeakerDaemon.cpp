@@ -2,7 +2,7 @@
 
 
 CSpeakerDaemon::CSpeakerDaemon()
-    :device("default")
+    :device("default"), shmFile("shmDaemon"), semFile("semaphoreDaemon")
 {
 
 }
@@ -43,7 +43,6 @@ void CSpeakerDaemon::initSpeaker() {
 void CSpeakerDaemon::closeSpeaker() {
 
     snd_pcm_close(handle);
-
     return;
 }
 
@@ -54,19 +53,77 @@ void CSpeakerDaemon::closeSpeaker() {
 * Output         : None (void)
 * Return		 : None
 *******************************************************************************/
-int CSpeakerDaemon::wrtieSpeaker(void* microData, int size) {
+int CSpeakerDaemon::wrtieSpeaker() {
 
-    frames = snd_pcm_writei(handle, microData,  size);
-
-//   if (frames < 0)
-//           frames = snd_pcm_recover(handle, frames, 0);
-//   if (frames < 0)
-//           printf("snd_pcm_writei failed: %s\n", snd_strerror(frames));
-//   if (frames > 0 && frames < ((long)(wav.subchunk2_size)/4))
-//           printf("Short write (expected %li, wrote %li)\n", ((long)(wav.subchunk2_size)/4), frames);
+    frames = snd_pcm_writei(handle, wavData,  sizeWav/4);
+    if (frames < 0)
+           frames = snd_pcm_recover(handle, frames, 0);
 
     return 0;
 }
+
+/*******************************************************************************
+* Function Name  : initSemaphores
+* Description    : Initialize all semaphores
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : None
+*******************************************************************************/
+void CSpeakerDaemon::sharedMemory()
+{
+    unsigned int shmdes;
+    sem_t *sDaemon;
+    char* shmptr;
+    char *ptr;
+    int size;;
+
+    /* Open the shared memory object */
+    if ( (shmdes = shm_open(shmFile.c_str(), O_RDWR, 0)) == -1 ) {
+        syslog(LOG_INFO,"shm_open failure");
+        exit(-1);
+    }
+
+    sharedMemorySize = 4096 * sysconf(_SC_PAGE_SIZE);
+    if((shmptr = (char *) mmap(0, sharedMemorySize, PROT_WRITE|PROT_READ, MAP_SHARED,shmdes,0)) == (caddr_t) -1){
+        syslog(LOG_INFO,"mmap failure");
+        exit(-1);
+     }
+
+    /* Open the Semaphore */
+    sDaemon = sem_open(semFile.c_str(), 0, 0644, 0);
+    if(sDaemon == (void*) -1) {
+       syslog(LOG_INFO,"sem_open failure");
+       exit(-1);
+    }
+
+    /* Lock the semaphore */
+    if(!sem_wait(sDaemon)){
+       /* Access to the shared memory area */
+
+        ptr = (char *)&size;
+        *ptr++ = shmptr[0];
+        *ptr++ = shmptr[1];
+        *ptr++ = shmptr[2];
+        *ptr =   shmptr[3];
+        sizeWav = size;
+
+        delete wavData; // delete the last PCM data
+
+        wavData = new char[sizeWav];
+        for(int index = 4; index < sizeWav + 4; index++)
+           wavData[index - 4] = shmptr[index];
+
+        /* Release the semaphore lock */
+        sem_post(sDaemon);
+    }
+
+    munmap(shmptr, sharedMemorySize);
+    /* Close the shared memory object */
+    close(shmdes);
+    /* Close the Semaphore */
+    sem_close(sDaemon);
+}
+
 
 CSpeakerDaemon* CSpeakerDaemon::instance = 0;
 
