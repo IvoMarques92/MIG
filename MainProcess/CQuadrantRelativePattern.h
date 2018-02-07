@@ -1,6 +1,12 @@
 #ifndef _CQUADRANTRELATIVEPATTERN_H
 #define _CQUADRANTRELATIVEPATTERN_H
+
 #include <string>
+#include <fstream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
+#include <unistd.h>
 
 using namespace std;
 
