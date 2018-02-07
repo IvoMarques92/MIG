@@ -49,6 +49,18 @@ int main()
 
     matrix->writeLedMatrix();
 
+    cout << "0,0"<< endl;
+    matrix->setQuadr(0,0);
+    sleep(5);
+    cout << "0,1"<< endl;
+    matrix->setQuadr(0,1);
+    sleep(5);
+    cout << "1,0"<< endl;
+    matrix->setQuadr(1,0);
+    sleep(5);
+    cout << "1,1"<< endl;
+    matrix->setQuadr(1,1);
+
     /**+++++++++++++END of test of the CGenerateSound+++++++++++++++++*/
 
 

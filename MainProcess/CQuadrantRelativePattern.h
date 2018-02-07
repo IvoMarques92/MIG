@@ -1,12 +1,16 @@
 #ifndef _CQUADRANTRELATIVEPATTERN_H
 #define _CQUADRANTRELATIVEPATTERN_H
 
-#include <string>
+#include <string>              //C++ String Management//
 #include <fstream>
 #include <stdio.h>
 #include <stdlib.h>
-#include <iostream>
-#include <unistd.h>
+#include <iostream>             //C++ I/O Terminal//
+
+#include <sys/mount.h>          //mount() and umount() Functions//
+#include <unistd.h>             //System Calls//
+#include <mqueue.h>             //Message Queues APIs//
+
 
 using namespace std;
 
