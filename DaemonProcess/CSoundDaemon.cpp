@@ -18,6 +18,7 @@ CSoundDaemon::~CSoundDaemon()
 * Return		 : None
 *******************************************************************************/
 void CSoundDaemon::initSemaphore() {
+
     return;
 }
 
@@ -41,3 +42,5 @@ CSoundDaemon * CSoundDaemon::getInstance()
 
     return instance;
 }
+
+
