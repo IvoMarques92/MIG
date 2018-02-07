@@ -14,12 +14,16 @@ public:
     CGenerateSound();
     ~CGenerateSound();
     string getPathGeneratedSound();
+    string getPathTempoEffect();
+    string getPathSpeedEffect();
     void setAbsolutePattern(vector<vector<char>>);
-    void changeSpeed(int);
-    void changeTempo(int);
+    string changeSpeed(float);
+    string changeTempo(float);
     string generateSound(unsigned char);
 
 private: 
+    string pathTempoEffect;
+    string pathSpeedEffect;
     string pathWavAbsolutePatternFIle;
     vector<vector<char>> absoluteMatrix;
 };
