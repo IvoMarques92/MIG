@@ -28,20 +28,19 @@ void CDistanceSensor::startReadCDistanceSensor()
                              0b11100111};           //860SPS, Disable comparator
 
     if ((fd = open("/dev/i2c-1", O_RDWR)) < 0) {
-        printf("ERROR:Can not open device!");
+        perror("ERROR:Can not open device!");
     }
 
     if (ioctl(fd, I2C_SLAVE, addrI2C) < 0) {
-        printf("ERROR: Can not find the address!");
+        perror("ERROR: Can not find the address!");
     }
 
     if (write(fd, writeBuffer, 3) != 3) {
-        printf("ERROR: Can not write on device");
+        perror("ERROR: Can not write on device");
     }
     writeBuffer[0] = 0;
     if (write(fd,writeBuffer, 1) != 1) {
-        perror("Write register select");
-        exit(-1);
+        perror("ERROR: Write register select");
     }
 
     close(fd);
@@ -63,15 +62,15 @@ float CDistanceSensor::readCDistanceSensor() {
     readBuffer[1] = 0;
 
     if ((fd = open("/dev/i2c-1", O_RDONLY)) < 0) {
-        printf("ERROR:Can not open device!");
+        perror("ERROR:Can not open device!");
     }
 
     if (ioctl(fd, I2C_SLAVE, addrI2C) < 0) {
-        printf("ERROR: Can not find the address!");
+        perror("ERROR: Can not find the address!");
     }
 
     if (read(fd, readBuffer, 2) != 2) {
-        printf("ERROR: Can not read on device");
+        perror("ERROR: Can not read on device");
     }
 
     close(fd);
