@@ -6,7 +6,6 @@ CONFIG -= qt
 QMAKE_LFLAGS += -lasound
 
 SOURCES += main.cpp \
-    CSoundDaemon.cpp \
     CSpeakerDaemon.cpp
 
 #To use the RPI3
@@ -14,7 +13,4 @@ target.path = /root
 INSTALLS += target
 
 HEADERS += \
-    Headers/CSoundDaemon.h \
-    Headers/CSpeakerDaemon.h \
-    CSoundDaemon.h \
-    CSpeakerDaemon.h
+           CSpeakerDaemon.h
