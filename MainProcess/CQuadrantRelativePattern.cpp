@@ -2,7 +2,7 @@
 
 CQuadrantRelativePattern::CQuadrantRelativePattern()
 {
-
+    device = "/dev/"
 }
 
 CQuadrantRelativePattern::~CQuadrantRelativePattern()
@@ -10,10 +10,18 @@ CQuadrantRelativePattern::~CQuadrantRelativePattern()
 
 }
 
+int CQuadrantRelativePattern::getQuadrant()
+{
+    return layer;
+}
+
 void CQuadrantRelativePattern::writeQuadrant() {
+
+
     return;
 }
 
-void CQuadrantRelativePattern::setQuadrant( int) {
+void CQuadrantRelativePattern::setQuadrant( int x, int y) {
+
     return;
 }
