@@ -15,8 +15,9 @@
 #include <iostream>
 #include "CMig.h"
 
-#include "CLedMatrix.h"
+#include "CDistanceSensor.h"
 #include "vector"
+#include "time.h"
 
 using namespace std;
 
@@ -30,26 +31,16 @@ int main()
     Mig->initSemaphores();
     Mig->run();
 
-    /**+++++++++++++++++test CLedMatrix+++++++++++++++++++++++++++++++*/
-    CLedMatrix * matrix = CLedMatrix::getInstance();
+    /**+++++++++++++++++test I2C +++++++++++++++++++++++++++++++++++++*/
+    CDistanceSensor * distancia = CDistanceSensor::getInstance();
+    float aux;
+    while(1) {
+    aux = distancia->getDistanceCDistanceSensor();
+    cout << "distance: " << aux << "Volts" << endl;
 
-    vector<vector<char>> ma;
-
-    ma.resize(8);
-    for(int c = 0; c < 8; c++)
-    {
-        ma[c].resize(8);
-        for(int i = 0; i < 4; i++)
-        {
-            ma[c][i] = c+i;
-        }
+    sleep(2);
     }
-
-    matrix->setLedMatrix(ma);
-
-    matrix->writeLedMatrix();
-
-    /**+++++++++++++END of test of the CGenerateSound+++++++++++++++++*/
+    /**++++++++++++++++++++++++END of test+++++++++++++++++++++++++++++*/
 
 
 
