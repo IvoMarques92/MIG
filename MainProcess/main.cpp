@@ -39,7 +39,7 @@ int main()
     for(int c = 0; c < 8; c++)
     {
         ma[c].resize(8);
-        for(int i = 0; i < 8; i++)
+        for(int i = 0; i < 4; i++)
         {
             ma[c][i] = c+i;
         }

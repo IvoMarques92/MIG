@@ -78,14 +78,14 @@ void CLedMatrix::setLedMatrix(vector<vector<char> > newMatrix) {
     matrix = newMatrix;
 
     //Get Quadrant
-    int xQuadr = 0, yQuadr = 0;
+    int xQuadr = 1, yQuadr = 0;
 
     //Set RelativePattern based on Quadrant
-    for(int col=0 + xQuadr*4; col < 4 + xQuadr*4; col++)
+    for(int col=0; col < 4; col++)
     {
-        for(int lin=0 + yQuadr*4; lin < 4 + yQuadr*4; lin++)
+        for(int lin=0; lin < 4; lin++)
         {
-            this->relativeMatrix[col][lin] = matrix[col][lin];
+            this->relativeMatrix[col][lin] = matrix[col + xQuadr*4][lin + yQuadr*4];
         }
     }
 
