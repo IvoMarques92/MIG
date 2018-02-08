@@ -18,8 +18,14 @@ CTouchMatrix::~CTouchMatrix()
 * Return		 : None
 *******************************************************************************/
 int CTouchMatrix::openTouchMatrix() {
-    capFile.open("/dev/touchIN", ios_base::in | ios_base::out);
-    if(!capFile.is_open())
+    touchIn.open("/dev/touchIN", ios_base::in | ios_base::out);
+    touchOut.open("/dev/touchOUT",ios_base::in | ios_base::out);
+    if(!touchIn.is_open())
+    {
+        perror("Error open the device driver with file /dev/touchIN ! ");
+     return -1;
+    }
+    if(!touchOut.is_open())
     {
         perror("Error open the device driver with file /dev/touchIN ! ");
      return -1;
@@ -35,7 +41,8 @@ int CTouchMatrix::openTouchMatrix() {
 * Return		 : None
 *******************************************************************************/
 void CTouchMatrix::closeTouchMatrix() {
-    capFile.close();
+    touchIn.close();
+    touchOut.close();
     return;
 }
 
@@ -49,10 +56,17 @@ void CTouchMatrix::closeTouchMatrix() {
 *******************************************************************************/
 char * CTouchMatrix::readTouchMatrix() {
 
-    capFile.read(buffer, 4);
+    static char count = 0;
+    static string line = "0";
+
+    touchOut.write(line.c_str(), 1);
+    line = to_string((count++) & 0x03);
+
+    touchIn.read(buffer, 4);
 
     return buffer;
 }
+
 
 CTouchMatrix* CTouchMatrix::instance = 0;
 

@@ -15,7 +15,7 @@ public:
     
 private: 
     vector<int> soundWave;
-    fstream capFile;
+    fstream touchIn, touchOut;
     CTouchMatrix();
     ~CTouchMatrix();
     static CTouchMatrix* instance;
