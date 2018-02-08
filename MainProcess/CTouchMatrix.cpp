@@ -1,12 +1,13 @@
 #include "CTouchMatrix.h"
 
-CTouchMatrix::CTouchMatrix() {
-
+CTouchMatrix::CTouchMatrix()
+{
+    buffer = new char [4];
 }
 
 CTouchMatrix::~CTouchMatrix()
 {
-
+    delete buffer;
 }
 
 /*******************************************************************************
@@ -16,8 +17,14 @@ CTouchMatrix::~CTouchMatrix()
 * Output         : None (void)
 * Return		 : None
 *******************************************************************************/
-void CTouchMatrix::initTouchMatrix() {
-    return;
+int CTouchMatrix::openTouchMatrix() {
+    capFile.open("/dev/touchIN", ios_base::in | ios_base::out);
+    if(!capFile.is_open())
+    {
+        perror("Error open the device driver with file /dev/touchIN ! ");
+     return -1;
+    }
+    return 0;
 }
 
 /*******************************************************************************
@@ -28,6 +35,7 @@ void CTouchMatrix::initTouchMatrix() {
 * Return		 : None
 *******************************************************************************/
 void CTouchMatrix::closeTouchMatrix() {
+    capFile.close();
     return;
 }
 
@@ -36,10 +44,14 @@ void CTouchMatrix::closeTouchMatrix() {
 * Description    : Read the Touch Matrix
 * Input          : None (void)
 * Output         : None (void)
-* Return		 : None
+* Return		 : char * :vector of 4 positions each position represent one
+*                : column of the touch Matrix
 *******************************************************************************/
-int CTouchMatrix::readTouchMatrix() {
-    return 0;
+char * CTouchMatrix::readTouchMatrix() {
+
+    capFile.read(buffer, 4);
+
+    return buffer;
 }
 
 CTouchMatrix* CTouchMatrix::instance = 0;
