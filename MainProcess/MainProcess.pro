@@ -3,7 +3,7 @@ CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
 
-QMAKE_LFLAGS += -lasound
+QMAKE_LFLAGS += -lasound -lpthread
 
 SOURCES += main.cpp \
     CAbsolutePattern.cpp \
