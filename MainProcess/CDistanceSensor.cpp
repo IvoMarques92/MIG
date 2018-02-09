@@ -1,7 +1,10 @@
 #include "CDistanceSensor.h"
 
 CDistanceSensor::CDistanceSensor() {
-
+    device = "/dev/i2c-1";
+    addrI2C = 0x48;
+    distance = 0;
+    voltsPerBit = 3.3 / 32768.0;
 }
 
 CDistanceSensor::~CDistanceSensor()
@@ -10,39 +13,93 @@ CDistanceSensor::~CDistanceSensor()
 }
 
 /*******************************************************************************
-* Function Name  : initCDistanceSensor
-* Description    : Initialize distance sensor
+* Function Name  : startReadCDistanceSensor
+* Description    : Start the read from the Distance Sensor. To read the value, first
+*                   give 1.25ms to make the acquisition, after call the function
+*                   readCDistanceSensor().
 * Input          : None (void)
 * Output         : None (void)
 * Return		 : None
 *******************************************************************************/
-void CDistanceSensor::initCDistanceSensor() {
-    return;
-}
+void CDistanceSensor::startReadCDistanceSensor()
+{
+    uint8_t writeBuffer[] = {1,                     //config register -> from pag.28 Datasheet ADS1115
+                             0b11000011,            //Single Conversion, AIN0, 4.096V, Single Shoot mode
+                             0b11100111};           //860SPS, Disable comparator
 
-/*******************************************************************************
-* Function Name  : closeCDistanceSensor
-* Description    : Close distance sensor
-* Input          : None (void)
-* Output         : None (void)
-* Return		 : None
-*******************************************************************************/
-void CDistanceSensor::closeCDistanceSensor() {
-    return;
+    if ((fd = open("/dev/i2c-1", O_RDWR)) < 0) {
+        perror("ERROR:Can not open device!");
+    }
+
+    if (ioctl(fd, I2C_SLAVE, addrI2C) < 0) {
+        perror("ERROR: Can not find the address!");
+    }
+
+    if (write(fd, writeBuffer, 3) != 3) {
+        perror("ERROR: Can not write on device");
+    }
+    writeBuffer[0] = 0;
+    if (write(fd,writeBuffer, 1) != 1) {
+        perror("ERROR: Write register select");
+    }
+
+    close(fd);
+
 }
 
 /*******************************************************************************
 * Function Name  : readCDistanceSensor
-* Description    : Read distance sensor
+* Description    : Read distance sensor, the function startReadCDistanceSensor()
+*                   needs to be called before this function, and between the function
+*                   startReadCDistanceSensor() and readCDistanceSensor() needs 1.25ms,
+*                   because the ADC needs time to make the acquisition
 * Input          : None (void)
 * Output         : None (void)
-* Return		 : None
+* Return		 : distance (float)
 *******************************************************************************/
-uint16_t CDistanceSensor::readCDistanceSensor() {
-    return 0;
+float CDistanceSensor::readCDistanceSensor() {
+    readBuffer[0] = 0;
+    readBuffer[1] = 0;
+
+    if ((fd = open("/dev/i2c-1", O_RDONLY)) < 0) {
+        perror("ERROR:Can not open device!");
+    }
+
+    if (ioctl(fd, I2C_SLAVE, addrI2C) < 0) {
+        perror("ERROR: Can not find the address!");
+    }
+
+    if (read(fd, readBuffer, 2) != 2) {
+        perror("ERROR: Can not read on device");
+    }
+
+    close(fd);
+
+    distance = voltsPerBit * (readBuffer[0]<<8 | readBuffer[1]);
+
+    return distance;
 }
 
 CDistanceSensor* CDistanceSensor::instance = 0;
+
+/*******************************************************************************
+* Function Name  : getDistanceCDistanceSensor()
+* Description    : Read distance sensor, this function already make the delay
+*                   between the function startReadCDistanceSensor() and the function
+*                   readCDistanceSensor().
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : distance (float)
+*******************************************************************************/
+float CDistanceSensor::getDistanceCDistanceSensor()
+{
+    float aux;
+    startReadCDistanceSensor();
+    //1.25ms delay to make the conversion and send from adc to uC
+    usleep(1250);
+    aux = readCDistanceSensor();
+    return aux;
+}
 
 CDistanceSensor * CDistanceSensor::getInstance()
 {
