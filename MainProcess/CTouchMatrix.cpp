@@ -1,12 +1,13 @@
 #include "CTouchMatrix.h"
 
-CTouchMatrix::CTouchMatrix() {
-
+CTouchMatrix::CTouchMatrix()
+{
+    buffer = new char [4];
 }
 
 CTouchMatrix::~CTouchMatrix()
 {
-
+    delete buffer;
 }
 
 /*******************************************************************************
@@ -16,8 +17,20 @@ CTouchMatrix::~CTouchMatrix()
 * Output         : None (void)
 * Return		 : None
 *******************************************************************************/
-void CTouchMatrix::initTouchMatrix() {
-    return;
+int CTouchMatrix::openTouchMatrix() {
+    touchIn.open("/dev/touchIN", ios_base::in | ios_base::out);
+    touchOut.open("/dev/touchOUT",ios_base::in | ios_base::out);
+    if(!touchIn.is_open())
+    {
+        perror("Error open the device driver with file /dev/touchIN ! ");
+     return -1;
+    }
+    if(!touchOut.is_open())
+    {
+        perror("Error open the device driver with file /dev/touchIN ! ");
+     return -1;
+    }
+    return 0;
 }
 
 /*******************************************************************************
@@ -28,6 +41,8 @@ void CTouchMatrix::initTouchMatrix() {
 * Return		 : None
 *******************************************************************************/
 void CTouchMatrix::closeTouchMatrix() {
+    touchIn.close();
+    touchOut.close();
     return;
 }
 
@@ -36,11 +51,22 @@ void CTouchMatrix::closeTouchMatrix() {
 * Description    : Read the Touch Matrix
 * Input          : None (void)
 * Output         : None (void)
-* Return		 : None
+* Return		 : char * :vector of 4 positions each position represent one
+*                : column of the touch Matrix
 *******************************************************************************/
-int CTouchMatrix::readTouchMatrix() {
-    return 0;
+char * CTouchMatrix::readTouchMatrix() {
+
+    static char count = 0;
+    static string line = "0";
+
+    touchOut.write(line.c_str(), 1);
+    line = to_string((count++) & 0x03);
+
+    touchIn.read(buffer, 4);
+
+    return buffer;
 }
+
 
 CTouchMatrix* CTouchMatrix::instance = 0;
 
