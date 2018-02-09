@@ -5,10 +5,10 @@ modprobe i2c-bcm2708
 modprobe spi-bcm2835
 
 # Insert a module into the Linux Kernel
-insmod capSensorsModule.ko
-insmod 4LedModule.ko
-insmod touchINModule.ko
-insmod touchOUTModule.ko
+insmod /root/DevDriver/capSensorsModule.ko
+insmod /root/DevDriver/4LedModule.ko
+insmod /root/DevDriver/touchINModule.ko
+insmod /root/DevDriver/touchOUTModule.ko
 
 # Execute Daemon
 
