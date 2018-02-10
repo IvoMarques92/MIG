@@ -7,7 +7,7 @@
 using namespace std;
 
 extern pthread_cond_t mcDataAnalysisAbsolutePattern;
-extern sem_t sTimerTouchIn, sTimerIRSensorm, sTimerSlideSensor;
+extern sem_t sTimerTouchIn, sTimerIRSensor, sTimerSlideSensor;
 extern pthread_mutex_t mDataAnalysis4Leds, mDataAnalusisTouchOut, mDataAnalysis2DLedMatrix;
 extern pthread_t tTouchIn, tIRSensor, tSlideSensor, tSoundGenerater, tAbsolutePattern, tDataAnalysis;
 extern mqd_t qTouchInDataAnalysis, qIRSensorDataAnalysis, qSlideSensorDataAnalysis, qDataAnalysisSoundGenerator;
@@ -62,7 +62,46 @@ void CMig::initMigSensors() {
 * Return		 : None
 *******************************************************************************/
 void CMig::initSemaphores() {
+
+    extern sem_t sTimerTouchIn;
+    extern sem_t sTimerIRSensor;
+    extern sem_t sTimerSlideSensor;
+    //extern sem_t *sSoundGeneratorDaemon;
+
+    sem_init (&sTimerTouchIn, 0, 0); //second 0 -> the semaphore is shared between threads of the process
+    sem_init (&sTimerIRSensor, 0, 0); //second 0 -> the semaphore is shared between threads of the process
+    sem_init (&sTimerSlideSensor, 0, 0); //second 0 -> the semaphore is shared between threads of the process
+
+    //*sSoundGeneratorDaemon;
+
     return;
+}
+
+void CMig::initSignal()
+{
+    struct itimerval itv;
+
+    signal(SIGALRM,ISR);
+
+    itv.it_interval.tv_sec = 0;
+    itv.it_interval.tv_usec = 250000;//it_interval -> recarga
+    itv.it_value.tv_sec = 0;
+    itv.it_value.tv_usec = 250000; //only for the first timer expires
+
+    setitimer(ITIMER_REAL, &itv, NULL);	//ITIMER_REAL is for a SIGALRM
+    return;
+}
+
+void CMig::ISR(int sign)
+{
+    if(sign == SIGALRM)
+    {
+         /* Post to the semaphore to sample the sensors.*/
+         sem_post (&sTimerSlideSensor);
+         sem_post (&sTimerIRSensor);
+         sem_post (&sTimerSlideSensor);
+
+    }
 }
 
 /*******************************************************************************
@@ -104,7 +143,11 @@ void *tTouchInFunction( void *ptr )
 {
     cout << "Hello tTouchInFunction" << endl;
     while (1) {
-
+        /* Wait for sTimerSlideSensor semaphore. If its value is positive,
+        decrement the count and execute the code. If zero, block until a
+        new semaphore post. */
+        sem_wait (&sTimerSlideSensor);
+        printf("*\n");
     }
 }
 
@@ -112,7 +155,11 @@ void *tIRSensorFunction( void *ptr )
 {
     cout << "Hello tIRSensorFunction" << endl;
     while (1) {
-
+        /* Wait for sTimerSlideSensor semaphore. If its value is positive,
+        decrement the count and execute the code. If zero, block until a
+        new semaphore post. */
+        sem_wait (&sTimerIRSensor);
+        printf("**\n");
     }
 }
 
@@ -120,7 +167,11 @@ void *tSlideSensorFunction( void *ptr )
 {
     cout << "Hello tSlideSensorFunction" << endl;
     while (1) {
-
+        /* Wait for sTimerSlideSensor semaphore. If its value is positive,
+        decrement the count and execute the code. If zero, block until a
+        new semaphore post. */
+        sem_wait (&sTimerSlideSensor);
+        printf("***\n");
     }
 }
 
@@ -205,6 +256,7 @@ int CMig::initThreads() {
 
     return 0;
 }
+
 
 /*******************************************************************************
 * Function Name  : setupThread

@@ -4,6 +4,8 @@
 #include <mqueue.h>
 #include <pthread.h>
 #include <semaphore.h>
+#include <signal.h>
+#include <sys/time.h>
 
 class CMig {
 public: 
@@ -11,6 +13,7 @@ public:
     void initMigAtuators();
     void initMigSensors();
     void initSemaphores();
+    void initSignal();
     void initQueue();
     int run();
 
@@ -19,7 +22,8 @@ private:
     CMig();
     ~CMig();
     int initThreads();
-    void setupThread(int prio, pthread_attr_t *pthread_attr, struct sched_param *pthread_param);
+    void setupThread(int, pthread_attr_t *, struct sched_param *);
+    static void ISR(int); //static because signal(SIGALRM,ISR);
 };
 
 #endif //_CMIG_H
