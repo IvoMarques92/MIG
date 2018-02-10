@@ -10,8 +10,18 @@ extern pthread_cond_t mcDataAnalysisAbsolutePattern;
 extern sem_t sTimerTouchIn, sTimerIRSensor, sTimerSlideSensor;
 extern pthread_mutex_t mDataAnalysis4Leds, mDataAnalusisTouchOut, mDataAnalysis2DLedMatrix;
 extern pthread_t tTouchIn, tIRSensor, tSlideSensor, tSoundGenerater, tAbsolutePattern, tDataAnalysis;
-extern mqd_t qTouchInDataAnalysis, qIRSensorDataAnalysis, qSlideSensorDataAnalysis, qDataAnalysisSoundGenerator;
 
+extern pthread_cond_t conIRDataAnalysis;
+extern pthread_cond_t conSlideDataAnalysis;
+extern pthread_cond_t conTouchInDataAnalysis;
+extern pthread_cond_t conDataAnalysisSoundGenerator;
+extern pthread_cond_t conDataAnalysisAbsolutePattern;
+
+extern pthread_mutex_t mIRDataAnalysis;
+extern pthread_mutex_t mSlideDataAnalysis;
+extern pthread_mutex_t mTouchInDataAnalysis;
+extern pthread_mutex_t mDataAnalysisSoundGenerator;
+extern pthread_mutex_t mDataAnalysisAbsolutePattern;
 
 CMig::CMig() {
 
@@ -77,6 +87,59 @@ void CMig::initSemaphores() {
     return;
 }
 
+/*******************************************************************************
+* Function Name  : initMutexs
+* Description    : Initialize Mutexs
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : None
+*******************************************************************************/
+void CMig::initMutexs()
+{
+    extern pthread_mutex_t mIRDataAnalysis;
+    extern pthread_mutex_t mSlideDataAnalysis;
+    extern pthread_mutex_t mTouchInDataAnalysis;
+    extern pthread_mutex_t mDataAnalysisSoundGenerator;
+    extern pthread_mutex_t mDataAnalysisAbsolutePattern;
+
+    mIRDataAnalysis = PTHREAD_MUTEX_INITIALIZER;
+    mSlideDataAnalysis = PTHREAD_MUTEX_INITIALIZER;
+    mTouchInDataAnalysis = PTHREAD_MUTEX_INITIALIZER;
+    mDataAnalysisSoundGenerator = PTHREAD_MUTEX_INITIALIZER;
+    mDataAnalysisAbsolutePattern = PTHREAD_MUTEX_INITIALIZER;
+
+}
+
+/*******************************************************************************
+* Function Name  : initConditionVariables
+* Description    : Initialize Condition Variables
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : None
+********************************************************************************/
+void CMig::initConditionVariables()
+{
+
+    extern pthread_cond_t conIRDataAnalysis;
+    extern pthread_cond_t conSlideDataAnalysis;
+    extern pthread_cond_t conTouchInDataAnalysis;
+    extern pthread_cond_t conDataAnalysisSoundGenerator;
+    extern pthread_cond_t conDataAnalysisAbsolutePattern;
+
+    conIRDataAnalysis = PTHREAD_COND_INITIALIZER;
+    conSlideDataAnalysis = PTHREAD_COND_INITIALIZER;
+    conTouchInDataAnalysis = PTHREAD_COND_INITIALIZER;
+    conDataAnalysisSoundGenerator = PTHREAD_COND_INITIALIZER;
+    conDataAnalysisAbsolutePattern = PTHREAD_COND_INITIALIZER;
+}
+
+/*******************************************************************************
+* Function Name  : initSignal
+* Description    : Set time for the interrupts.
+* Input          : int sign
+* Output         : None (void)
+* Return		 : None
+*******************************************************************************/
 void CMig::initSignal()
 {
     struct itimerval itv;
@@ -92,28 +155,25 @@ void CMig::initSignal()
     return;
 }
 
+/*******************************************************************************
+* Function Name  : ISR
+* Description    : Interrupt of the timer iverload
+* Input          : int sign
+* Output         : None (void)
+* Return		 : None
+*******************************************************************************/
 void CMig::ISR(int sign)
 {
     if(sign == SIGALRM)
     {
          /* Post to the semaphore to sample the sensors.*/
-         sem_post (&sTimerSlideSensor);
+         sem_post (&sTimerTouchIn);
          sem_post (&sTimerIRSensor);
          sem_post (&sTimerSlideSensor);
 
     }
 }
 
-/*******************************************************************************
-* Function Name  : initQueue
-* Description    : Initialize Queue
-* Input          : None (void)
-* Output         : None (void)
-* Return		 : None
-*******************************************************************************/
-void CMig::initQueue() {
-    return;
-}
 
 /*******************************************************************************
 * Function Name  : run
@@ -137,8 +197,6 @@ int CMig::run() {
         return - 1;
 }
 
-#include <unistd.h>
-
 void *tTouchInFunction( void *ptr )
 {
     cout << "Hello tTouchInFunction" << endl;
@@ -146,8 +204,15 @@ void *tTouchInFunction( void *ptr )
         /* Wait for sTimerSlideSensor semaphore. If its value is positive,
         decrement the count and execute the code. If zero, block until a
         new semaphore post. */
-        sem_wait (&sTimerSlideSensor);
-        printf("*\n");
+        sem_wait (&sTimerTouchIn);
+
+        pthread_mutex_lock(&mTouchInDataAnalysis);
+
+        pthread_cond_signal(&conTouchInDataAnalysis);
+
+        pthread_mutex_unlock(&mTouchInDataAnalysis);
+
+
     }
 }
 
@@ -159,7 +224,12 @@ void *tIRSensorFunction( void *ptr )
         decrement the count and execute the code. If zero, block until a
         new semaphore post. */
         sem_wait (&sTimerIRSensor);
-        printf("**\n");
+
+        pthread_mutex_lock(&mIRDataAnalysis);
+
+        pthread_cond_signal(&conIRDataAnalysis);
+
+        pthread_mutex_unlock(&mIRDataAnalysis);
     }
 }
 
@@ -171,22 +241,112 @@ void *tSlideSensorFunction( void *ptr )
         decrement the count and execute the code. If zero, block until a
         new semaphore post. */
         sem_wait (&sTimerSlideSensor);
-        printf("***\n");
+
+        pthread_mutex_lock(&mSlideDataAnalysis);
+
+        pthread_cond_signal(&conSlideDataAnalysis);
+
+        pthread_mutex_unlock(&mSlideDataAnalysis);
     }
+}
+
+void updateSound()
+{
+    pthread_mutex_lock(&mDataAnalysisSoundGenerator);
+
+    pthread_cond_signal(&conDataAnalysisSoundGenerator);
+
+    pthread_mutex_unlock(&mDataAnalysisSoundGenerator);
+}
+
+void processingDataSlide()
+{
+    pthread_mutex_lock(&mDataAnalysisAbsolutePattern);
+
+    pthread_cond_signal(&conDataAnalysisAbsolutePattern);
+
+    pthread_mutex_unlock(&mDataAnalysisAbsolutePattern);
 }
 
 void *tDataAnalysisFunction( void *ptr )
 {
+    int timeout1, timeout2, timeout3;
+    timespec timeout;
     cout << "Hello tDataAnalysisPatternFunction" << endl;
     while (1) {
 
+        /*------------------- SlideSensor-----------------------------------*/
+
+        clock_gettime(CLOCK_REALTIME, &timeout);
+        timeout.tv_nsec += 25000000;
+
+        pthread_mutex_lock(&mSlideDataAnalysis);
+
+        timeout3 = pthread_cond_timedwait(&conSlideDataAnalysis, &mSlideDataAnalysis, &timeout );
+
+        if(!timeout3)
+        {
+            //do something
+            processingDataSlide();
+            cout << "3" << endl;
+        }
+
+        pthread_mutex_unlock(&mSlideDataAnalysis);
+
+        /*------------------- TouchIN ------------------------------------*/
+        clock_gettime(CLOCK_REALTIME, &timeout);
+        timeout.tv_nsec += 25000000;
+
+        pthread_mutex_lock(&mTouchInDataAnalysis);
+
+        timeout1 = pthread_cond_timedwait(&conTouchInDataAnalysis, &mTouchInDataAnalysis, &timeout );
+
+        if(!timeout1)
+        {
+            //do something
+             cout << "1" << endl;
+            updateSound();
+
+        }
+
+        pthread_mutex_unlock(&mTouchInDataAnalysis);
+
+        /*------------------- IRSensor ------------------------------------*/
+
+        clock_gettime(CLOCK_REALTIME, &timeout);
+        timeout.tv_nsec += 25000000;
+
+        pthread_mutex_lock(&mIRDataAnalysis);
+
+        timeout2 = pthread_cond_timedwait(&conIRDataAnalysis, &mIRDataAnalysis, &timeout );
+
+        if(!timeout2)
+        {
+            //do something
+             cout << "2" << endl;
+            updateSound();
+
+        }
+
+        pthread_mutex_unlock(&mIRDataAnalysis);
+
     }
 }
+
+
 void *tSoundGeneraterFunction( void *ptr )
 {
     cout << "Hello tSoundGeneraterFunction" << endl;
     while (1) {
 
+        pthread_mutex_lock(&mDataAnalysisSoundGenerator);
+
+        pthread_cond_wait(&conDataAnalysisSoundGenerator, &mDataAnalysisSoundGenerator );
+
+        //do something
+        cout << "sound " << endl;
+
+        pthread_mutex_unlock(&mDataAnalysisSoundGenerator);
     }
 }
 
@@ -195,6 +355,14 @@ void *tAbsolutePatternFunction( void *ptr )
     cout << "Hello tAbsolutePatternFunction" << endl;
     while (1) {
 
+        pthread_mutex_lock(&mDataAnalysisAbsolutePattern);
+
+        pthread_cond_wait(&conDataAnalysisAbsolutePattern, &mDataAnalysisAbsolutePattern );
+
+        //do something
+        cout << "absolute " << endl;
+
+        pthread_mutex_unlock(&mDataAnalysisAbsolutePattern);
     }
 }
 
@@ -258,6 +426,8 @@ int CMig::initThreads() {
 }
 
 
+
+
 /*******************************************************************************
 * Function Name  : setupThread
 * Description    : Define the prioratie of the thread.
@@ -281,3 +451,4 @@ CMig * CMig::getInstance()
 
     return instance;
 }
+

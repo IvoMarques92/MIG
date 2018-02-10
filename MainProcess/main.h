@@ -36,20 +36,20 @@ sem_t sTimerIRSensor;
 sem_t sTimerSlideSensor;
 sem_t *sSoundGeneratorDaemon;
 
-/****************************Queue identifier******************************/
-
-mqd_t qTouchInDataAnalysis;
-mqd_t qIRSensorDataAnalysis;
-mqd_t qSlideSensorDataAnalysis;
-mqd_t qDataAnalysisSoundGenerator;
-
 /****************************Mutex identifier******************************/
 
-pthread_mutex_t mDataAnalysis4Leds;
-pthread_mutex_t mDataAnalusisTouchOut;
-pthread_mutex_t mDataAnalysis2DLedMatrix;
+pthread_mutex_t mIRDataAnalysis;
+pthread_mutex_t mSlideDataAnalysis;
+pthread_mutex_t mTouchInDataAnalysis;
+pthread_mutex_t mDataAnalysisSoundGenerator;
+pthread_mutex_t mDataAnalysisAbsolutePattern;
 
 /****************************Condition Variable identifier*****************/
-pthread_cond_t mcDataAnalysisAbsolutePattern;
+
+pthread_cond_t conIRDataAnalysis;
+pthread_cond_t conSlideDataAnalysis;
+pthread_cond_t conTouchInDataAnalysis;
+pthread_cond_t conDataAnalysisSoundGenerator;
+pthread_cond_t conDataAnalysisAbsolutePattern;
 
 #endif // MAIN_H

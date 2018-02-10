@@ -1,20 +1,30 @@
 #ifndef _CMIG_H
 #define _CMIG_H
 
-#include <mqueue.h>
+
 #include <pthread.h>
 #include <semaphore.h>
 #include <signal.h>
-#include <sys/time.h>
+
+
+#include <unistd.h> //sleep
+#include <errno.h>
+#include <sys/types.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <sys/fcntl.h>
+
+
 
 class CMig {
 public: 
     static CMig* getInstance();
+    void initConditionVariables();
     void initMigAtuators();
     void initMigSensors();
     void initSemaphores();
+    void initMutexs();
     void initSignal();
-    void initQueue();
     int run();
 
 private:
