@@ -38,28 +38,55 @@ int main()
 
     ma.resize(8);
     for(int c = 0; c < 8; c++)
-    {
         ma[c].resize(8);
-        for(int i = 0; i < 4; i++)
-        {
-            ma[c][i] = c+i;
-        }
-    }
 
-    matrix->setQuadr(0,0);
+
+    ma[0][0] = 1;
+
+    ma[0][6] = 1;
+    ma[0][7] = 1;
+
+    ma[7][0] = 1;
+    ma[7][1] = 1;
+    ma[7][2] = 1;
+
+    ma[7][4] = 1;
+    ma[7][5] = 1;
+    ma[7][6] = 1;
+    ma[7][7] = 1;
+
+    matrix->setQuadr(1,1);
 
     matrix->setLedMatrix(ma);
 
     matrix->writeLedMatrix();
+//    while(1)
+//    {
+//        usleep(250000);
+//        for(int c = 0; c < 8; c++)
+//        {
+//            ma[c].resize(8);
+//            for(int i = 0; i < 8; i++)
+//            {
+//                ma[c][i] = c+i +1;
+//            }
+//        }
+//        matrix->setLedMatrix(ma);
 
-    sleep(2);
-    matrix->setQuadr(0,1);
+//        matrix->writeLedMatrix();
+//        usleep(250000);
+//        for(int c = 0; c < 8; c++)
+//        {
+//            ma[c].resize(8);
+//            for(int i = 0; i < 8; i++)
+//            {
+//                ma[c][i] = c+i;
+//            }
+//        }
+//        matrix->setLedMatrix(ma);
 
-    sleep(2);
-    matrix->setQuadr(1,0);
-
-    sleep(2);
-    matrix->setQuadr(1,1);
+//        matrix->writeLedMatrix();
+//    }
 
 
     /**+++++++++++++END of test of the CGenerateSound+++++++++++++++++*/
