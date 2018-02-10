@@ -20,13 +20,12 @@
 #include <semaphore.h>
 
 
-pthread_t thread1, thread2, thread3, thread4;
-
 /****************************Thread identifier*****************************/
 
 pthread_t tTouchIn;
 pthread_t tIRSensor;
 pthread_t tSlideSensor;
+pthread_t tDataAnalysis;
 pthread_t tSoundGenerater;
 pthread_t tAbsolutePattern;
 
