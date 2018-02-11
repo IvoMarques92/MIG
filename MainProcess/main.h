@@ -34,14 +34,15 @@ pthread_t tAbsolutePattern;
 sem_t sTimerTouchIn;
 sem_t sTimerIRSensor;
 sem_t sTimerSlideSensor;
+sem_t sTeste;
 sem_t *sSoundGeneratorDaemon;
 
 /****************************Mutex identifier******************************/
 
 pthread_mutex_t mIRDataAnalysis;
+pthread_mutex_t mAbsolutePattern;
 pthread_mutex_t mSlideDataAnalysis;
 pthread_mutex_t mTouchInDataAnalysis;
-pthread_mutex_t mDataAnalysisSoundGenerator;
 pthread_mutex_t mDataAnalysisAbsolutePattern;
 
 /****************************Condition Variable identifier*****************/

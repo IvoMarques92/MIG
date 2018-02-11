@@ -64,6 +64,11 @@ string CGenerateSound::getPathSpeedEffect()
     return pathSpeedEffect;
 }
 
+#include <stdio.h>
+#include <iostream>
+
+using namespace std;
+
 /*******************************************************************************
 * Function Name  : setAbsolutePattern
 * Description    : set the absolutePattern
@@ -73,6 +78,19 @@ string CGenerateSound::getPathSpeedEffect()
 *******************************************************************************/
 void CGenerateSound::setAbsolutePattern(vector<vector<char>> absolutePattern) {
     absoluteMatrix = absolutePattern;
+
+//    for(int col = 0; col < 8; col++)
+//    {
+
+//        for(int lin = 0; lin < 8; lin++){
+
+//           printf("%d ", absoluteMatrix[col][lin]);
+//        }
+//        cout << endl;
+//    }
+
+//    cout << endl;
+
     return;
 }
 

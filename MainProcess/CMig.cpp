@@ -6,13 +6,14 @@
 #include "CGenerateSound.h"
 #include "CAbsolutePattern.h"
 
+
 #include <iostream>
 
 using namespace std;
 
 extern pthread_cond_t mcDataAnalysisAbsolutePattern;
-extern sem_t sTimerTouchIn, sTimerIRSensor, sTimerSlideSensor;
-extern pthread_mutex_t mDataAnalysis4Leds, mDataAnalusisTouchOut, mDataAnalysis2DLedMatrix;
+extern sem_t sTimerTouchIn, sTimerIRSensor, sTimerSlideSensor, sTeste;
+extern pthread_mutex_t mDataAnalysis4Leds, mDataAnalusisTouchOut, mDataAnalysis2DLedMatrix ;
 extern pthread_t tTouchIn, tIRSensor, tSlideSensor, tSoundGenerater, tAbsolutePattern, tDataAnalysis;
 
 extern pthread_cond_t conIRDataAnalysis;
@@ -24,7 +25,7 @@ extern pthread_cond_t conDataAnalysisAbsolutePattern;
 extern pthread_mutex_t mIRDataAnalysis;
 extern pthread_mutex_t mSlideDataAnalysis;
 extern pthread_mutex_t mTouchInDataAnalysis;
-extern pthread_mutex_t mDataAnalysisSoundGenerator;
+extern pthread_mutex_t mAbsolutePattern;
 extern pthread_mutex_t mDataAnalysisAbsolutePattern;
 
 CMig::CMig() {
@@ -79,12 +80,13 @@ void CMig::initSemaphores() {
     extern sem_t sTimerTouchIn;
     extern sem_t sTimerIRSensor;
     extern sem_t sTimerSlideSensor;
+    extern sem_t sTeste;
     //extern sem_t *sSoundGeneratorDaemon;
 
     sem_init (&sTimerTouchIn, 0, 0); //second 0 -> the semaphore is shared between threads of the process
     sem_init (&sTimerIRSensor, 0, 0); //second 0 -> the semaphore is shared between threads of the process
     sem_init (&sTimerSlideSensor, 0, 0); //second 0 -> the semaphore is shared between threads of the process
-
+    sem_init (&sTeste, 0 , 0);
     //*sSoundGeneratorDaemon;
 
     return;
@@ -100,15 +102,15 @@ void CMig::initSemaphores() {
 void CMig::initMutexs()
 {
     extern pthread_mutex_t mIRDataAnalysis;
+    extern pthread_mutex_t mAbsolutePattern;
     extern pthread_mutex_t mSlideDataAnalysis;
     extern pthread_mutex_t mTouchInDataAnalysis;
-    extern pthread_mutex_t mDataAnalysisSoundGenerator;
     extern pthread_mutex_t mDataAnalysisAbsolutePattern;
 
     mIRDataAnalysis = PTHREAD_MUTEX_INITIALIZER;
+    mAbsolutePattern = PTHREAD_MUTEX_INITIALIZER;
     mSlideDataAnalysis = PTHREAD_MUTEX_INITIALIZER;
     mTouchInDataAnalysis = PTHREAD_MUTEX_INITIALIZER;
-    mDataAnalysisSoundGenerator = PTHREAD_MUTEX_INITIALIZER;
     mDataAnalysisAbsolutePattern = PTHREAD_MUTEX_INITIALIZER;
 
 }
@@ -151,9 +153,9 @@ void CMig::initSignal()
 
     // 50ms interrupt
     itv.it_interval.tv_sec = 0;
-    itv.it_interval.tv_usec = 50000;//it_interval -> recarga
+    itv.it_interval.tv_usec = 25000;//it_interval -> recarga
     itv.it_value.tv_sec = 0;
-    itv.it_value.tv_usec = 50000; //only for the first timer expires
+    itv.it_value.tv_usec = 25000; //only for the first timer expires
 
     setitimer(ITIMER_REAL, &itv, NULL);	//ITIMER_REAL is for a SIGALRM
     return;
@@ -172,8 +174,8 @@ void CMig::ISR(int sign)
     {
          /* Post to the semaphore to sample the sensors.*/
          sem_post (&sTimerTouchIn);
-         sem_post (&sTimerIRSensor);
-         sem_post (&sTimerSlideSensor);
+         //sem_post (&sTimerIRSensor);
+         //sem_post (&sTimerSlideSensor);
 
     }
 }
@@ -206,24 +208,19 @@ void *tTouchInFunction( void *ptr )
         new semaphore post. */
         sem_wait (&sTimerTouchIn);
 
-//        if(touch->openTouchMatrix() < 0)
-//            perror("erro open the matrix");
-
-//        buffer = touch->readTouchMatrix();
-
-//        touch->closeTouchMatrix();
-
         buffer = sensors->readTouchMatrix();
 
-        for(int i = 0; i < 4; i++)
+        for(int i = 0; i < 4; i++){
             matrix[count][i] = buffer[i];
-
+            //cout << (int)buffer[i] << " ";
+        }
         count++;
-
+ //cout << endl;
         pthread_mutex_lock(&mTouchInDataAnalysis);
 
         if(count == 4)
         {
+            //cout << endl;
             count = 0;
 
             //Get Quadrant
@@ -242,6 +239,7 @@ void *tTouchInFunction( void *ptr )
                 }
             }
 
+
             //verifie if the new matrix is different, if is different change the matrix
             for(int col=0; col < 8; col++)
             {
@@ -251,16 +249,41 @@ void *tTouchInFunction( void *ptr )
                     {
                         lin = 8; //leave the for
                         col = 8; //leave the for
-                        pthread_cond_signal(&conTouchInDataAnalysis);
+
+                        for(int i = 0; i < 8; i++)
+                            for(int j = 0; j < 8; j++)
+                                absolutePattern[i][j] = absolutePattern[i][j] ^ auxMatrix[i][j];
+
+                        pthread_mutex_lock(&mAbsolutePattern);
+
                         absolute->setAbsolutePattern(absolutePattern);
+
+//                        //TESTE
+//                                   for(int col = 0; col < 8; col++)
+//                                   {
+
+//                                       for(int lin = 0; lin < 8; lin++){
+
+//                                          printf("%d ", absolutePattern[col][lin]);
+//                                       }
+//                                       cout << endl;
+//                                   }
+
+//                                   cout << endl;
+//                                   //END TESTE
+
+                        //pthread_cond_signal(&conTouchInDataAnalysis);
+                        //semaphore to tsoundgenerat
+                        pthread_mutex_unlock(&mAbsolutePattern);
+                        sem_post(&sTeste);
                     }
                 }
+
             }
 
          }
 
         pthread_mutex_unlock(&mTouchInDataAnalysis);
-
 
     }
 }
@@ -308,11 +331,11 @@ void *tSlideSensorFunction( void *ptr )
 
 void updateSound()
 {
-    pthread_mutex_lock(&mDataAnalysisSoundGenerator);
+//    pthread_mutex_lock(&mDataAnalysisSoundGenerator);
 
-    pthread_cond_signal(&conDataAnalysisSoundGenerator);
+//    pthread_cond_signal(&conDataAnalysisSoundGenerator);
 
-    pthread_mutex_unlock(&mDataAnalysisSoundGenerator);
+//    pthread_mutex_unlock(&mDataAnalysisSoundGenerator);
 }
 
 void processingDataSlide()
@@ -387,59 +410,57 @@ void *tDataAnalysisFunction( void *ptr )
 {
     int timeout1, timeout2, timeout3;
     timespec timeout;
-    cout << "Hello tDataAnalysisPatternFunction" << endl;
+
     while (1) {
 
         /*------------------- SlideSensor-----------------------------------*/
 
-        clock_gettime(CLOCK_REALTIME, &timeout);
-        timeout.tv_nsec += 10000000; //timeout of 10 ms
+//        clock_gettime(CLOCK_REALTIME, &timeout);
+//        timeout.tv_nsec += 1000000; //timeout of 1 ms
 
-        pthread_mutex_lock(&mSlideDataAnalysis);
+//        pthread_mutex_lock(&mSlideDataAnalysis);
 
-        timeout3 = pthread_cond_timedwait(&conSlideDataAnalysis, &mSlideDataAnalysis, &timeout );
+//        timeout3 = pthread_cond_timedwait(&conSlideDataAnalysis, &mSlideDataAnalysis, &timeout );
 
-        if(!timeout3)
-        {
-            processingDataSlide();
-        }
+//        if(!timeout3)
+//        {
+//            processingDataSlide();
+//        }
 
-        pthread_mutex_unlock(&mSlideDataAnalysis);
+//        pthread_mutex_unlock(&mSlideDataAnalysis);
 
         /*------------------- TouchIN ------------------------------------*/
-        clock_gettime(CLOCK_REALTIME, &timeout);
-        timeout.tv_nsec += 10000000; //timeout of 10 ms
+        //clock_gettime(CLOCK_REALTIME, &timeout);
+        //timeout.tv_nsec += 1000; //timeout of 0.1 ms
 
-        pthread_mutex_lock(&mTouchInDataAnalysis);
+//        pthread_mutex_lock(&mTouchInDataAnalysis);
 
-        timeout1 = pthread_cond_timedwait(&conTouchInDataAnalysis, &mTouchInDataAnalysis, &timeout );
+//        pthread_cond_wait(&conTouchInDataAnalysis, &mTouchInDataAnalysis);
 
-        if(!timeout1)
-        {
 
-            updateSound();
+//            updateSound();
 
-        }
 
-        pthread_mutex_unlock(&mTouchInDataAnalysis);
+
+//        pthread_mutex_unlock(&mTouchInDataAnalysis);
 
         /*------------------- IRSensor ------------------------------------*/
 
-        clock_gettime(CLOCK_REALTIME, &timeout);
-        timeout.tv_nsec += 10000000; //timeout of 10 ms
+//        clock_gettime(CLOCK_REALTIME, &timeout);
+//        timeout.tv_nsec += 1000000; //timeout of 1 ms
 
-        pthread_mutex_lock(&mIRDataAnalysis);
+//        pthread_mutex_lock(&mIRDataAnalysis);
 
-        timeout2 = pthread_cond_timedwait(&conIRDataAnalysis, &mIRDataAnalysis, &timeout );
+//        timeout2 = pthread_cond_timedwait(&conIRDataAnalysis, &mIRDataAnalysis, &timeout );
 
-        if(!timeout2)
-        {
+//        if(!timeout2)
+//        {
 
-            updateSound();
+//            updateSound();
 
-        }
+//        }
 
-        pthread_mutex_unlock(&mIRDataAnalysis);
+//        pthread_mutex_unlock(&mIRDataAnalysis);
 
     }
 }
@@ -447,15 +468,19 @@ void *tDataAnalysisFunction( void *ptr )
 
 void *tSoundGeneraterFunction( void *ptr )
 {
+    extern sem_t sTeste;
     extern sem_t *sSoundGeneratorDaemon;
-    cout << "Hello tSoundGeneraterFunction" << endl;
+    extern pthread_mutex_t mAbsolutePattern;
+
     while (1) {
 
-        pthread_mutex_lock(&mDataAnalysisSoundGenerator);
+//        pthread_mutex_lock(&mDataAnalysisSoundGenerator);
 
-        pthread_cond_wait(&conDataAnalysisSoundGenerator, &mDataAnalysisSoundGenerator );
+//        pthread_cond_wait(&conDataAnalysisSoundGenerator, &mDataAnalysisSoundGenerator );
 
-        pthread_mutex_unlock(&mDataAnalysisSoundGenerator);
+//        pthread_mutex_unlock(&mDataAnalysisSoundGenerator);
+
+        sem_wait(&sTeste);
 
         /**+++++++++++++++++++++CGenerateSound+++++++++++++++++++*/
 
@@ -465,7 +490,11 @@ void *tSoundGeneraterFunction( void *ptr )
         CGenerateSound * sound = new CGenerateSound();
         CAbsolutePattern *absolute = CAbsolutePattern::getInstance();
 
+        pthread_mutex_lock(&mAbsolutePattern);
+
         sound->setAbsolutePattern(absolute->getAbsolutePattern());
+
+        pthread_mutex_unlock(&mAbsolutePattern);
 
         sound->generateSound(1);
 
@@ -537,6 +566,7 @@ void *tSoundGeneraterFunction( void *ptr )
 
 void *tAbsolutePatternFunction( void *ptr )
 {
+    extern pthread_mutex_t mDataAnalysisSoundGenerator;
     CLedMatrix *matrix = CLedMatrix::getInstance();
     CAbsolutePattern *absolute = CAbsolutePattern::getInstance();
 
@@ -565,11 +595,11 @@ int CMig::run() {
     if(!initThreads())
     {
         pthread_join( tSoundGenerater, NULL);
-        pthread_join( tDataAnalysis, NULL);
+        //pthread_join( tDataAnalysis, NULL);
         pthread_join( tTouchIn, NULL);
-        pthread_join( tIRSensor, NULL);
-        pthread_join( tSlideSensor, NULL);
-        pthread_join( tAbsolutePattern, NULL);
+//        pthread_join( tIRSensor, NULL);
+//        pthread_join( tSlideSensor, NULL);
+//        pthread_join( tAbsolutePattern, NULL);
         return 0;
     }
     else
@@ -596,34 +626,34 @@ int CMig::initThreads() {
     pthread_attr_getschedpolicy(&threadAttr, &threadPolicy);
 
     /* define prioratie tSoundGenerater */
-    setupThread(1, &threadAttr, &threadParam);
+    setupThread(3, &threadAttr, &threadParam);
     pthread_attr_setinheritsched (&threadAttr, PTHREAD_EXPLICIT_SCHED);
     errortSoundGenerater = pthread_create(&tSoundGenerater,&threadAttr,tSoundGeneraterFunction,NULL);
 
     /* define prioratie tDataAnalysis */
     setupThread(2, &threadAttr, &threadParam);
     pthread_attr_setinheritsched (&threadAttr, PTHREAD_EXPLICIT_SCHED);
-    errortDataAnalysis = pthread_create(&tDataAnalysis,&threadAttr,tDataAnalysisFunction,NULL);
+    //errortDataAnalysis = pthread_create(&tDataAnalysis,&threadAttr,tDataAnalysisFunction,NULL);
 
     /* define prioratie tTouchIn */
-    setupThread(3, &threadAttr, &threadParam);
+    setupThread(1, &threadAttr, &threadParam);
     pthread_attr_setinheritsched (&threadAttr, PTHREAD_EXPLICIT_SCHED);
     errortTouchIn = pthread_create(&tTouchIn,&threadAttr,tTouchInFunction,NULL);
 
     /* define prioratie tIRSensor */
     setupThread(3, &threadAttr, &threadParam);
     pthread_attr_setinheritsched (&threadAttr, PTHREAD_EXPLICIT_SCHED);
-    errortIRSensor = pthread_create(&tIRSensor,&threadAttr,tIRSensorFunction,NULL);
+   // errortIRSensor = pthread_create(&tIRSensor,&threadAttr,tIRSensorFunction,NULL);
 
     /* define prioratie tSlideSensor */
     setupThread(3, &threadAttr, &threadParam);
     pthread_attr_setinheritsched (&threadAttr, PTHREAD_EXPLICIT_SCHED);
-    errortSlideSensor = pthread_create(&tSlideSensor,&threadAttr,tSlideSensorFunction,NULL);
+   // errortSlideSensor = pthread_create(&tSlideSensor,&threadAttr,tSlideSensorFunction,NULL);
 
     /* define prioratie tAbsolutePattern */
     setupThread(4, &threadAttr, &threadParam);
     pthread_attr_setinheritsched (&threadAttr, PTHREAD_EXPLICIT_SCHED);
-    errortAbsolutePattern = pthread_create(&tAbsolutePattern,&threadAttr,tAbsolutePatternFunction,NULL);
+    //errortAbsolutePattern = pthread_create(&tAbsolutePattern,&threadAttr,tAbsolutePatternFunction,NULL);
 
     if((errortDataAnalysis != 0)&&(errortTouchIn != 0)&&(errortIRSensor != 0)&&(errortSlideSensor != 0)&&(errortSoundGenerater != 0)&&(errortAbsolutePattern != 0))
     {

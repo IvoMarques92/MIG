@@ -1,4 +1,7 @@
 #include "CLedMatrix.h"
+#include <iostream>
+
+using namespace std;
 
 CLedMatrix::CLedMatrix()
     :CQuadrantRelativePattern(), CRelativePattern()
@@ -11,7 +14,7 @@ CLedMatrix::CLedMatrix()
 
     fd = open(device.c_str(), O_RDWR);
     if(fd < 0)
-        printf("ERROR: Can not open the device0.0");
+        perror("ERROR: Can not open the device0.0");
 
     initSPI();
 
@@ -54,9 +57,12 @@ void CLedMatrix::writeLedMatrix(void) {
     for(int col = 1; col <= 8; col++)
     {
         data=0x00;
-        for(int lin = 0; lin <= 7; lin++)
+        for(int lin = 0; lin <= 7; lin++){
             data = data | ((matrix[col-1][lin]&0x01) << lin);
+            cout << (int)data << " ";
+        }
         matrixWrite(col, data);
+        cout << endl;
     }
     close(fd);
 
