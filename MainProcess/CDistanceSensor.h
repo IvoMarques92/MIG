@@ -18,7 +18,7 @@ typedef unsigned short int uint16_t;
 
 class CDistanceSensor {
 public: 
-   float getDistanceCDistanceSensor();
+   float getDistanceSensor();
    static CDistanceSensor* getInstance();
 
 private:

@@ -3,10 +3,7 @@
 #include "CLedMatrix.h"
 #include "CActuators.h"
 #include "CConvertWav.h"
-#include "CTouchMatrix.h"
 #include "CGenerateSound.h"
-//#include "CDistanceSensor.h"
-//#include "CHandSlideSensor.h"
 #include "CAbsolutePattern.h"
 
 #include <iostream>
@@ -32,7 +29,6 @@ extern pthread_mutex_t mDataAnalysisAbsolutePattern;
 
 CMig::CMig() {
 
-    cout << "constr MIG" << endl;
 
 }
 
@@ -192,7 +188,7 @@ void *tTouchInFunction( void *ptr )
 
     vector<vector<char>> absolutePattern, auxMatrix;
 
-    CTouchMatrix *touch =  CTouchMatrix::getInstance();
+    CSensors *sensors = CSensors::getInstance();
     CLedMatrix *ledMatrix = CLedMatrix::getInstance();
     CAbsolutePattern *absolute = CAbsolutePattern::getInstance();
 
@@ -210,12 +206,14 @@ void *tTouchInFunction( void *ptr )
         new semaphore post. */
         sem_wait (&sTimerTouchIn);
 
-        if(touch->openTouchMatrix() < 0)
-            perror("erro open the matrix");
+//        if(touch->openTouchMatrix() < 0)
+//            perror("erro open the matrix");
 
-        buffer = touch->readTouchMatrix();
+//        buffer = touch->readTouchMatrix();
 
-        touch->closeTouchMatrix();
+//        touch->closeTouchMatrix();
+
+        buffer = sensors->readTouchMatrix();
 
         for(int i = 0; i < 4; i++)
             matrix[count][i] = buffer[i];
@@ -635,9 +633,6 @@ int CMig::initThreads() {
 
     return 0;
 }
-
-
-
 
 /*******************************************************************************
 * Function Name  : setupThread

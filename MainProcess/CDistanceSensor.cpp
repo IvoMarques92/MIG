@@ -107,7 +107,7 @@ CDistanceSensor* CDistanceSensor::instance = 0;
 * Output         : None (void)
 * Return		 : distance (float)
 *******************************************************************************/
-float CDistanceSensor::getDistanceCDistanceSensor()
+float CDistanceSensor::getDistanceSensor()
 {
     float aux;
     startReadCDistanceSensor();

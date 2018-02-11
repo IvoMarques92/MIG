@@ -54,10 +54,11 @@ char * CSensors::readHandSlideSensor() {
 * Description    : Read the Distance Sensor
 * Input          : None (void)
 * Output         : None (void)
-* Return		 : None
+* Return		 : float -> speed
 *******************************************************************************/
 float CSensors::readDistanceSensor() {
-    return 0;
+    CDistanceSensor *distanceIR = CDistanceSensor::getInstance();
+    return distanceIR->getDistanceSensor();
 }
 
 /*******************************************************************************
@@ -67,8 +68,18 @@ float CSensors::readDistanceSensor() {
 * Output         : None (void)
 * Return		 : None
 *******************************************************************************/
-int CSensors::readTouchMatrix() {
-    return 0;
+char * CSensors::readTouchMatrix() {
+
+    CTouchMatrix *touch =  CTouchMatrix::getInstance();
+
+    if(touch->openTouchMatrix() < 0)
+        perror("erro open the matrix");
+
+    buffer = touch->readTouchMatrix();
+
+    touch->closeTouchMatrix();
+
+    return buffer;
 }
 
 /*******************************************************************************

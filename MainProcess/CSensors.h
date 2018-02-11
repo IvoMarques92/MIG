@@ -9,12 +9,13 @@ public:
     static CSensors* getInstance();
     void initSensors();
     char * readHandSlideSensor();
+    char *readTouchMatrix();
     float readDistanceSensor();
-    int readTouchMatrix();
-    void closeSensors();
-    void setSpeed(float speed1){speed = speed1;}
     float getSpeed(){return speed;}
-private: 
+    void setSpeed(float speed1){speed = speed1;}
+    void closeSensors();
+
+private:
     float speed;
     char * buffer;
     CSensors();
