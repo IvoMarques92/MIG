@@ -59,10 +59,8 @@ void CLedMatrix::writeLedMatrix(void) {
         data=0x00;
         for(int lin = 0; lin <= 7; lin++){
             data = data | ((matrix[col-1][lin]&0x01) << lin);
-            cout << (int)data << " ";
         }
         matrixWrite(col, data);
-        cout << endl;
     }
     close(fd);
 
@@ -94,7 +92,7 @@ void CLedMatrix::setLedMatrix(vector<vector<char> > newMatrix) {
             for(int c = 0; c < 8; c++)
             {
                 for(int l = 0; l < 8; l++)
-                {matrix[c][7-l] = Aux[c][l];}
+                {matrix[c][7-l] = Aux[c][l] & 0x01;}
             }
 
     //Get Quadrant

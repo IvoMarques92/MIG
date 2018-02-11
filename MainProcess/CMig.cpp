@@ -286,6 +286,7 @@ void *tTouchInFunction( void *ptr )
                         //pthread_cond_signal(&conTouchInDataAnalysis);
                         //teste
                          ledMatrix->setLedMatrix(absolutePattern);
+                         ledMatrix->writeLedMatrix();
                         //semaphore to tsoundgenerat
                         pthread_mutex_unlock(&mAbsolutePattern);
                         sem_post(&sTeste);
