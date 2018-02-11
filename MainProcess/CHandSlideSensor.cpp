@@ -1,12 +1,13 @@
 #include "CHandSlideSensor.h"
 
-CHandSlideSensor::CHandSlideSensor() {
-
+CHandSlideSensor::CHandSlideSensor()
+{
+    buffer = new char [4];
 }
 
 CHandSlideSensor::~CHandSlideSensor()
 {
-
+    delete buffer;
 }
 
 /*******************************************************************************
@@ -16,8 +17,15 @@ CHandSlideSensor::~CHandSlideSensor()
 * Output         : None (void)
 * Return		 : None
 *******************************************************************************/
-void CHandSlideSensor::initCHandSlideSensor() {
-    return;
+int CHandSlideSensor::openHandSlideSensor()
+{
+    capFile.open("/dev/capSensors", ios_base::in | ios_base::out);
+    if(!capFile.is_open())
+    {
+        perror("Error open the device driver with file /dev/capSensors!");
+     return -1;
+    }
+    return 0;
 }
 
 /*******************************************************************************
@@ -27,7 +35,8 @@ void CHandSlideSensor::initCHandSlideSensor() {
 * Output         : None (void)
 * Return		 : None
 *******************************************************************************/
-void CHandSlideSensor::closeCHandSlideSensor() {
+void CHandSlideSensor::closeHandSlideSensor() {
+    capFile.close();
     return;
 }
 
@@ -38,8 +47,11 @@ void CHandSlideSensor::closeCHandSlideSensor() {
 * Output         : int
 * Return		 : None
 *******************************************************************************/
-int CHandSlideSensor::readCHandSlideSensor() {
-    return 0;
+char * CHandSlideSensor::readHandSlideSensor() {
+
+    capFile.read(buffer, 4);
+
+    return buffer;
 }
 
 CHandSlideSensor* CHandSlideSensor::instance = 0;

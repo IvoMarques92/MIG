@@ -11,7 +11,7 @@ const string column6  =   " /root/sounds/columns/column6.wav";
 const string column7  =   " /root/sounds/columns/column7.wav";
 
 CGenerateSound::CGenerateSound()
-    :CMatrixSounds()
+    :CMatrixSounds(), pathSpeedEffect("null"), pathTempoEffect("null"), pathWavAbsolutePatternFIle("null")
 {
     /*  Allocate memory and Initialize at zero the absolutePattern Matrix */
     absoluteMatrix.resize(8);
@@ -27,17 +27,108 @@ CGenerateSound::~CGenerateSound()
     vector<vector<char>>().swap(absoluteMatrix);
 }
 
-
+/*******************************************************************************
+* Function Name  : getPathGeneratedSound
+* Description    : get the path of the sound that was generated
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : string athWavAbsolutePatternFIle
+*******************************************************************************/
 string CGenerateSound::getPathGeneratedSound() {
 
     return pathWavAbsolutePatternFIle;
 
 }
 
+/*******************************************************************************
+* Function Name  : getPathTempoEffect
+* Description    : get the path of the sound with the time effect
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : string pathTempoEffect
+*******************************************************************************/
+string CGenerateSound::getPathTempoEffect()
+{
+    return pathTempoEffect;
+}
 
+/*******************************************************************************
+* Function Name  : getPathSpeedEffect
+* Description    : get the path of the sound with the speed effect
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : string pathSpeedEffect
+*******************************************************************************/
+string CGenerateSound::getPathSpeedEffect()
+{
+    return pathSpeedEffect;
+}
+
+/*******************************************************************************
+* Function Name  : setAbsolutePattern
+* Description    : set the absolutePattern
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : None
+*******************************************************************************/
 void CGenerateSound::setAbsolutePattern(vector<vector<char>> absolutePattern) {
     absoluteMatrix = absolutePattern;
     return;
+}
+
+/*******************************************************************************
+* Function Name  : changeSpeed
+* Description    : This function change the speed of the sound
+* Input          : int speed
+*                : If is 0, the effect is nullified
+* Output         : None (void)
+* Return		 : string pathSpeedEffect
+*******************************************************************************/
+string CGenerateSound::changeSpeed(float speed)
+{
+    string soxSpeed;
+    if(speed > 8) speed = 8; //max speed
+
+    if(speed <= 1)
+    {
+        pathSpeedEffect = pathWavAbsolutePatternFIle;
+    }
+    else
+    {
+        soxSpeed = "sox " + pathWavAbsolutePatternFIle + " /root/sounds/absoluteMatrixSounds/speedEffect.wav speed " + to_string(speed);
+        system(soxSpeed.c_str());
+        pathSpeedEffect = "/root/sounds/absoluteMatrixSounds/speedEffect.wav";
+    }
+
+    return pathSpeedEffect;
+
+}
+
+/*******************************************************************************
+* Function Name  : changeTempo
+* Description    : This function change the time of the sound
+* Input          : int tempo
+*                : If is 0, the effect is nullified
+* Output         : None (void)
+* Return		 : String pathTempoEffect
+*******************************************************************************/
+string CGenerateSound::changeTempo(float tempo)
+{
+    string soxTempo;
+    if(tempo > 8) tempo = 8;
+
+    if(tempo < 1)
+    {
+        pathTempoEffect = pathWavAbsolutePatternFIle;
+    }
+    else
+    {
+        soxTempo = "sox " + pathWavAbsolutePatternFIle + " /root/sounds/absoluteMatrixSounds/timeEffect.wav tempo " + to_string(tempo);
+        system(soxTempo.c_str());
+        pathTempoEffect = "/root/sounds/absoluteMatrixSounds/timeEffect.wav";
+    }
+
+    return pathTempoEffect;
 }
 
 /*******************************************************************************
@@ -67,7 +158,7 @@ string CGenerateSound::generateSound(unsigned char effect) {
     soxConc = "sox " + columns + " /root/sounds/absoluteMatrixSounds/soundEffect" + to_string(effect) + ".wav";
     system(soxConc.c_str());
 
-    pathWavAbsolutePatternFIle = " /root/sounds/absoluteMatrixSounds/soundEffect" + to_string(effect) + ".wav";
+    pathWavAbsolutePatternFIle = "/root/sounds/absoluteMatrixSounds/soundEffect" + to_string(effect) + ".wav";
 
     return pathWavAbsolutePatternFIle;
 }

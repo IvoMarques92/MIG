@@ -1,16 +1,20 @@
 #include "CSensors.h"
+#include "CTouchMatrix.h"
+#include "CDistanceSensor.h"
+#include "CHandSlideSensor.h"
 
 #include <iostream>
 
 using namespace std;
 
-CSensors::CSensors() {
-cout << "constr CSensors" << endl;
+CSensors::CSensors()
+{
+    buffer = new char [4];
 }
 
 CSensors::~CSensors()
 {
-
+    delete buffer;
 }
 
 /*******************************************************************************
@@ -29,10 +33,20 @@ void CSensors::initSensors() {
 * Description    : Read all the Hand Slide Sensor
 * Input          : None (void)
 * Output         : None (void)
-* Return		 : None
+* Return		 : char * buffer -> buffer with data from slide sensors
 *******************************************************************************/
-int CSensors::readHandSlideSensor() {
-    return 0;
+char * CSensors::readHandSlideSensor() {
+
+    CHandSlideSensor *caps = CHandSlideSensor::getInstance();
+
+    if(caps->openHandSlideSensor() < 0)
+        perror("Error Open Capacitive Sensors");
+
+    buffer = caps->readHandSlideSensor();
+
+    caps->closeHandSlideSensor();
+
+    return buffer;
 }
 
 /*******************************************************************************
@@ -42,7 +56,7 @@ int CSensors::readHandSlideSensor() {
 * Output         : None (void)
 * Return		 : None
 *******************************************************************************/
-uint16_t CSensors::readDistanceSensor() {
+float CSensors::readDistanceSensor() {
     return 0;
 }
 

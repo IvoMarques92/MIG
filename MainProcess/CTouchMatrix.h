@@ -1,22 +1,25 @@
-#ifndef _CTOUCHMATRIX_H
+ #ifndef _CTOUCHMATRIX_H
 #define _CTOUCHMATRIX_H
 
 #include <vector>
+#include <fstream>
 
 using namespace std;
 
 class CTouchMatrix {
 public: 
     static CTouchMatrix* getInstance();
-    void initTouchMatrix();
+    int openTouchMatrix();
     void closeTouchMatrix();
-    int readTouchMatrix();
+    char *readTouchMatrix();
     
 private: 
     vector<int> soundWave;
-    static CTouchMatrix* instance;
+    fstream touchIn, touchOut;
     CTouchMatrix();
     ~CTouchMatrix();
+    static CTouchMatrix* instance;
+    char * buffer;
 };
 
 #endif //_CTOUCHMATRIX_H

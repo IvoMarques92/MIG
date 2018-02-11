@@ -50,19 +50,19 @@ static void SetGPIOOutputValue(int GPIO, bool outputValue) {
 
 static ssize_t MIG4LedsDeviceWrite(struct file *f, const char __user *buf, size_t len, loff_t *off) {
 	switch (buf[0]){
-	    case '0':
+	    case '2':
 	        SetGPIOOutputValue(LedGpioPin[0], 0);
 	        SetGPIOOutputValue(LedGpioPin[1], 0);
 	        break;
-	    case '1':
+	    case '0':
 	        SetGPIOOutputValue(LedGpioPin[0], 0);
 	        SetGPIOOutputValue(LedGpioPin[1], 1);
 	        break;
-	    case '2':
+	    case '3':
 	        SetGPIOOutputValue(LedGpioPin[0], 1);
 	        SetGPIOOutputValue(LedGpioPin[1], 0);
 	        break;
-	    case '3':
+	    case '1':
 	        SetGPIOOutputValue(LedGpioPin[0], 1);
 	        SetGPIOOutputValue(LedGpioPin[1], 1);
 	        break;
