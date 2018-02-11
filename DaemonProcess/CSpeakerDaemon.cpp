@@ -22,12 +22,12 @@ CSpeakerDaemon::~CSpeakerDaemon()
 void CSpeakerDaemon::initSpeaker() {
 
     if ((snd_pcm_open(&handle, device.c_str(), SND_PCM_STREAM_PLAYBACK, 0)) < 0) {
-            perror("Playback open error");
-            exit(EXIT_FAILURE);
+            syslog(LOG_INFO, "Playback open error");
+            //exit(EXIT_FAILURE);
     }
     if ((snd_pcm_set_params(handle,SND_PCM_FORMAT_S16_LE,SND_PCM_ACCESS_RW_INTERLEAVED, 2, 44100, 1, 500000)) < 0) {   /* 0.5sec */
-            perror("Playback open error");
-            exit(EXIT_FAILURE);
+            syslog(LOG_INFO, "Playback open error");
+           // exit(EXIT_FAILURE);
     }
 
     return;

@@ -30,7 +30,13 @@ extern pthread_mutex_t mDataAnalysisAbsolutePattern;
 
 CMig::CMig() {
 
+    extern sem_t *sSoundGeneratorDaemon;
 
+    char shm_fn[] = "shmDaemon";
+    char sem_fn[] = "semaphoreDaemon";
+    shm_open(shm_fn,O_CREAT|O_RDWR|O_TRUNC, S_IRWXU|S_IRWXG);
+    sSoundGeneratorDaemon = sem_open(sem_fn, O_CREAT, 0644, 0);
+    sem_close(sSoundGeneratorDaemon);
 }
 
 CMig::~CMig()
@@ -340,23 +346,17 @@ void updateSound()
 
 void processingDataSlide()
 {
+    char * buffer = new char [4], cap1, cap2, cap3, cap4;
     static char old1 = 0, old2 = 0, old3 = 0, old4 = 0;
     static int count = 0;
     int x = 0, y = 0;
-    char * buffer = new char [4], cap1, cap2, cap3, cap4;
+
 
     CSensors *sensors = CSensors::getInstance();
 //    CHandSlideSensor *caps = CHandSlideSensor::getInstance();
     CLedMatrix *matrix = CLedMatrix::getInstance();
 
     buffer = sensors->readHandSlideSensor();
-
-//    if(caps->openHandSlideSensor() < 0)
-//        perror("Error Open Capacitive Sensors");
-
-//    buffer = caps->readHandSlideSensor();
-
-//    caps->closeHandSlideSensor();
 
     cap1 = buffer[0];
     cap2 = buffer[1];
@@ -365,25 +365,37 @@ void processingDataSlide()
 
     if(cap1){ // slide right
         if(old1)
+        {
             x = 1;
+            matrix->setQuadr(x,y);
+        }
         old1 = cap1;
     }
 
     if(cap2){ // slide left
         if(old2)
+        {
             x = 0;
+            matrix->setQuadr(x,y);
+        }
         old2 = cap2;
     }
 
     if(cap3){ // slide top
-        if(old3)
+        if(old3)   
+        {
             y = 0;
+            matrix->setQuadr(x,y);
+        }
         old3 = cap3;
     }
 
     if(cap4){ // slide low
         if(old4)
+        {
             y = 1;
+            matrix->setQuadr(x,y);
+        }
         old4 = cap4;
     }
 
@@ -395,13 +407,13 @@ void processingDataSlide()
         old4 = 0;
     }
 
-    pthread_mutex_lock(&mDataAnalysisAbsolutePattern);
+//    pthread_mutex_lock(&mDataAnalysisAbsolutePattern);
 
-    matrix->setQuadr(x,y);
 
-    pthread_cond_signal(&conDataAnalysisAbsolutePattern);
 
-    pthread_mutex_unlock(&mDataAnalysisAbsolutePattern);
+//    pthread_cond_signal(&conDataAnalysisAbsolutePattern);
+
+//    pthread_mutex_unlock(&mDataAnalysisAbsolutePattern);
 
     delete buffer;
 }
@@ -424,7 +436,7 @@ void *tDataAnalysisFunction( void *ptr )
 
 //        if(!timeout3)
 //        {
-//            processingDataSlide();
+            processingDataSlide();
 //        }
 
 //        pthread_mutex_unlock(&mSlideDataAnalysis);
@@ -473,12 +485,6 @@ void *tSoundGeneraterFunction( void *ptr )
     extern pthread_mutex_t mAbsolutePattern;
 
     while (1) {
-
-//        pthread_mutex_lock(&mDataAnalysisSoundGenerator);
-
-//        pthread_cond_wait(&conDataAnalysisSoundGenerator, &mDataAnalysisSoundGenerator );
-
-//        pthread_mutex_unlock(&mDataAnalysisSoundGenerator);
 
         sem_wait(&sTeste);
 
@@ -572,15 +578,15 @@ void *tAbsolutePatternFunction( void *ptr )
 
     while (1) {
 
-        pthread_mutex_lock(&mDataAnalysisAbsolutePattern);
+        pthread_mutex_lock(&mAbsolutePattern);
 
-        pthread_cond_wait(&conDataAnalysisAbsolutePattern, &mDataAnalysisAbsolutePattern );
+        pthread_cond_wait(&conDataAnalysisAbsolutePattern, &mAbsolutePattern );
 
         matrix->setLedMatrix(absolute->getAbsolutePattern());
 
-        matrix->writeLedMatrix();
+        pthread_mutex_unlock(&mAbsolutePattern);
 
-        pthread_mutex_unlock(&mDataAnalysisAbsolutePattern);
+        matrix->writeLedMatrix();
     }
 }
 
@@ -633,7 +639,7 @@ int CMig::initThreads() {
     /* define prioratie tDataAnalysis */
     setupThread(2, &threadAttr, &threadParam);
     pthread_attr_setinheritsched (&threadAttr, PTHREAD_EXPLICIT_SCHED);
-    //errortDataAnalysis = pthread_create(&tDataAnalysis,&threadAttr,tDataAnalysisFunction,NULL);
+    errortDataAnalysis = pthread_create(&tDataAnalysis,&threadAttr,tDataAnalysisFunction,NULL);
 
     /* define prioratie tTouchIn */
     setupThread(1, &threadAttr, &threadParam);
@@ -648,12 +654,12 @@ int CMig::initThreads() {
     /* define prioratie tSlideSensor */
     setupThread(3, &threadAttr, &threadParam);
     pthread_attr_setinheritsched (&threadAttr, PTHREAD_EXPLICIT_SCHED);
-   // errortSlideSensor = pthread_create(&tSlideSensor,&threadAttr,tSlideSensorFunction,NULL);
+    errortSlideSensor = pthread_create(&tSlideSensor,&threadAttr,tSlideSensorFunction,NULL);
 
     /* define prioratie tAbsolutePattern */
     setupThread(4, &threadAttr, &threadParam);
     pthread_attr_setinheritsched (&threadAttr, PTHREAD_EXPLICIT_SCHED);
-    //errortAbsolutePattern = pthread_create(&tAbsolutePattern,&threadAttr,tAbsolutePatternFunction,NULL);
+    errortAbsolutePattern = pthread_create(&tAbsolutePattern,&threadAttr,tAbsolutePatternFunction,NULL);
 
     if((errortDataAnalysis != 0)&&(errortTouchIn != 0)&&(errortIRSensor != 0)&&(errortSlideSensor != 0)&&(errortSoundGenerater != 0)&&(errortAbsolutePattern != 0))
     {
