@@ -46,6 +46,5 @@ int main()
         speaker->wrtieSpeaker();
     }
     speaker->closeSpeaker();
-    syslog(LOG_INFO,"teste");
     exit(EXIT_SUCCESS);
 }

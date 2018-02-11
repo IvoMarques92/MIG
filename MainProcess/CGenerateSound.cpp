@@ -87,9 +87,9 @@ void CGenerateSound::setAbsolutePattern(vector<vector<char>> absolutePattern) {
 string CGenerateSound::changeSpeed(float speed)
 {
     string soxSpeed;
-    if(speed > 8) speed = 8;
+    if(speed > 8) speed = 8; //max speed
 
-    if(speed < 1)
+    if(speed <= 1)
     {
         pathSpeedEffect = pathWavAbsolutePatternFIle;
     }

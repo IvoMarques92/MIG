@@ -8,15 +8,15 @@ public:
     
     static CSensors* getInstance();
     void initSensors();
-    int readHandSlideSensor();
-    uint16_t readDistanceSensor();
+    char * readHandSlideSensor();
+    float readDistanceSensor();
     int readTouchMatrix();
     void closeSensors();
-        
+    void setSpeed(float speed1){speed = speed1;}
+    float getSpeed(){return speed;}
 private: 
-    struct dataSensors{
-        int i;
-    };
+    float speed;
+    char * buffer;
     CSensors();
     ~CSensors();
     static CSensors* instance;
