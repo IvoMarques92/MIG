@@ -76,7 +76,20 @@ void CLedMatrix::writeLedMatrix(void) {
 *******************************************************************************/
 void CLedMatrix::setLedMatrix(vector<vector<char> > newMatrix) {
     int xQuadr, yQuadr;
-    matrix = newMatrix;
+
+    vector<vector<char>> Aux;
+
+    Aux.resize(8);
+    for(int i = 0; i < 8; i++)
+            Aux[i].resize(8);
+
+    Aux = newMatrix;
+
+            for(int c = 0; c < 8; c++)
+            {
+                for(int l = 0; l < 8; l++)
+                {matrix[c][7-l] = Aux[c][l];}
+            }
 
     //Get Quadrant
     xQuadr = getQuadrant() & 0x01;
@@ -87,7 +100,7 @@ void CLedMatrix::setLedMatrix(vector<vector<char> > newMatrix) {
     {
         for(int lin=0; lin < 4; lin++)
         {
-            this->relativeMatrix[col][lin] = matrix[col + xQuadr*4][lin + yQuadr*4];
+            this->relativeMatrix[col][lin] = matrix[lin + yQuadr*4][col + 4 - xQuadr*4];
         }
     }
 
@@ -104,7 +117,7 @@ void CLedMatrix::setQuadr(int x, int y)
     {
         for(int lin=0; lin < 4; lin++)
         {
-            this->relativeMatrix[col][lin] = matrix[col + x*4][lin + y*4];
+            this->relativeMatrix[col][lin] = matrix[lin + y*4][col + x*4];
         }
     }
     writeRelativePattern();

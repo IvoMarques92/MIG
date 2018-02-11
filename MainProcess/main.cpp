@@ -15,9 +15,6 @@
 #include <iostream>
 #include "CMig.h"
 
-#include "CConvertWav.h"
-#include "CMatrixSounds.h"
-#include "CGenerateSound.h"
 #include "vector"
 #include "time.h"
 
@@ -52,6 +49,7 @@ int main()
     Mig->initQueue();
     Mig->initSemaphores();
     Mig->run();
+
 
 
     /**+++++++++++++++++test of the CGenerateSound+++++++++++++++++*/
