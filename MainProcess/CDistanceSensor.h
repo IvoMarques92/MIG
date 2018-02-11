@@ -29,13 +29,12 @@ private:
     void startReadCDistanceSensor();
     float readCDistanceSensor();
 
-    float voltsPerBit;
-
     uint8_t readBuffer[2];
     int fd;
     string device;
     int addrI2C;
-    float distance;
+    unsigned short int distance;
+    float value;
 
 
 };

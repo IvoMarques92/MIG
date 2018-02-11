@@ -4,7 +4,7 @@ CDistanceSensor::CDistanceSensor() {
     device = "/dev/i2c-1";
     addrI2C = 0x48;
     distance = 0;
-    voltsPerBit = 3.3 / 32768.0;
+    value = 1;
 }
 
 CDistanceSensor::~CDistanceSensor()
@@ -58,6 +58,7 @@ void CDistanceSensor::startReadCDistanceSensor()
 * Return		 : distance (float)
 *******************************************************************************/
 float CDistanceSensor::readCDistanceSensor() {
+
     readBuffer[0] = 0;
     readBuffer[1] = 0;
 
@@ -75,9 +76,24 @@ float CDistanceSensor::readCDistanceSensor() {
 
     close(fd);
 
-    distance = voltsPerBit * (readBuffer[0]<<8 | readBuffer[1]);
+    distance =(readBuffer[0]<<8 | readBuffer[1]);
 
-    return distance;
+    if(distance < 6000)
+        value = 1;
+    else if(distance < 7500)
+        value = 1.5;
+    else if(distance < 9500)
+        value = 2;
+    else if(distance < 11000)
+        value = 2.5;
+    else if(distance < 13000)
+        value = 3;
+    else if(distance < 16000)
+        value = 3.5;
+    else
+        value = 4;
+
+    return value;
 }
 
 CDistanceSensor* CDistanceSensor::instance = 0;
