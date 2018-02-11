@@ -12,7 +12,7 @@
 #define CAP2 13
 #define CAP3 19
 
-#define DEVICE_NAME "capSensors"
+#define DEVICE_NAME "MIGCapSensors"
 #define CLASS_NAME  "capSensorsClass"
 
 MODULE_LICENSE("GPL");
@@ -106,7 +106,7 @@ static int __init MIG4LedsModule_init(void) {
 		goto failure_chrdevregister;
 	}
 	
-	if (IS_ERR(request_mem_region(GPIO_BASE, 0x2f, "capSensors"))) {
+	if (IS_ERR(request_mem_region(GPIO_BASE, 0x2f, "MIGCapSensors"))) {
 		pr_err("Error in request_mem_region");
 		goto failure_requestmem;
 	}

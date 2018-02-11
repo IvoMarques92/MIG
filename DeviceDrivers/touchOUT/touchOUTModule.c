@@ -9,7 +9,7 @@
 #define DECODER_2A0 15
 #define DECODER_2A1 18
 
-#define DEVICE_NAME "touchOUT"
+#define DEVICE_NAME "MIGTouchOUT"
 #define CLASS_NAME  "touchOUTClass"
 
 MODULE_LICENSE("GPL");
@@ -107,7 +107,7 @@ static int __init MIG4LedsModule_init(void) {
 		goto failure_chrdevregister;
 	}
 	
-	if (IS_ERR(request_mem_region(GPIO_BASE, 0x2f, "MIG4Leds"))) {
+	if (IS_ERR(request_mem_region(GPIO_BASE, 0x2f, "MIGTouchOUT"))) {
 		pr_err("Error in request_mem_region");
 		goto failure_requestmem;
 	}
