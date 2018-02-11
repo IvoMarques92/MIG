@@ -13,7 +13,7 @@
 #define ROW2 27
 #define ROW3 22
 
-#define DEVICE_NAME "touchIN"
+#define DEVICE_NAME "MIGTouchIN"
 #define CLASS_NAME  "touchINClass"
 
 MODULE_LICENSE("GPL");
@@ -107,7 +107,7 @@ static int __init MIG4LedsModule_init(void) {
 		goto failure_chrdevregister;
 	}
 	
-	if (IS_ERR(request_mem_region(GPIO_BASE, 0x2f, "touchIN"))) {
+	if (IS_ERR(request_mem_region(GPIO_BASE, 0x2f, "MIGTouchIN"))) {
 		pr_err("Error in request_mem_region");
 		goto failure_requestmem;
 	}
