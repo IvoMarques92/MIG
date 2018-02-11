@@ -19,7 +19,7 @@ CHandSlideSensor::~CHandSlideSensor()
 *******************************************************************************/
 int CHandSlideSensor::openHandSlideSensor()
 {
-    capFile.open("/dev/capSensors", ios_base::in | ios_base::out);
+    capFile.open("/dev/MIGCapSensors", ios_base::in | ios_base::out);
     if(!capFile.is_open())
     {
         perror("Error open the device driver with file /dev/capSensors!");

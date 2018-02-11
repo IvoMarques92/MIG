@@ -18,8 +18,8 @@ CTouchMatrix::~CTouchMatrix()
 * Return		 : None
 *******************************************************************************/
 int CTouchMatrix::openTouchMatrix() {
-    touchIn.open("/dev/touchIN", ios_base::in | ios_base::out);
-    touchOut.open("/dev/touchOUT",ios_base::in | ios_base::out);
+    touchIn.open("/dev/MIGTouchIN", ios_base::in | ios_base::out);
+    touchOut.open("/dev/MIGTouchOUT",ios_base::in | ios_base::out);
     if(!touchIn.is_open())
     {
         perror("Error open the device driver with file /dev/touchIN ! ");
