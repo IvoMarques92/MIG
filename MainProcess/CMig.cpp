@@ -164,9 +164,9 @@ void CMig::initSignal()
 
     // 25ms interrupt
     itv.it_interval.tv_sec = 0;
-    itv.it_interval.tv_usec = 200000;//it_interval -> recarga
+    itv.it_interval.tv_usec = 25000;//it_interval -> recarga
     itv.it_value.tv_sec = 0;
-    itv.it_value.tv_usec = 200000; //only for the first timer expires
+    itv.it_value.tv_usec = 25000; //only for the first timer expires
 
     setitimer(ITIMER_REAL, &itv, NULL);	//ITIMER_REAL is for a SIGALRM
     return;
@@ -223,12 +223,9 @@ void *tTouchInFunction( void *ptr )
 
         for(int i = 0; i < 4; i++){
             matrix[count][i] = buffer[i];
-            //cout << (int)buffer[i] << " ";
         }
         count++;
- //cout << endl;
        // pthread_mutex_lock(&mTouchInDataAnalysis);
-
         if(count == 4)
         {
             //cout << endl;
@@ -237,73 +234,66 @@ void *tTouchInFunction( void *ptr )
             //Get Quadrant
             xQuadr = ledMatrix->getQuadr() & 0x01;
             yQuadr = ((ledMatrix->getQuadr() >> 1) & 0x01);
- cout << (int)xQuadr << ","<< (int)yQuadr << endl;
 
             pthread_mutex_lock(&mAbsolutePattern);
 
             absolutePattern = absolute->getAbsolutePattern();
+//            //______________TESTE
+//           cout << "- - - - - - - - MAtrix Geral:\n";
+//           for(int lin = 0; lin < 8; lin++)
+//           {
+//               for(int col = 0; col < 8; col++){
+//                  printf("%d ", absolutePattern[lin][col]);
+//               }
+//               cout << endl;
+//           }
+//           cout << endl;
+//           //_____________END TESTE
+
+
 
             pthread_mutex_unlock(&mAbsolutePattern);
 
-            auxMatrix = absolutePattern;
+//            auxMatrix = absolutePattern;
 
             //Set RelativePattern based on Quadrant
-            cout << "MAtrix Relativa:\n";
             for(int lin=0; lin < 4; lin++)
             {
                 for(int col=0; col < 4; col++)
                 {
-                    absolutePattern[lin + yQuadr*4 ][col + xQuadr*4] = matrix[lin][col];
-                    cout << (int)matrix[lin][col]<< " ";
-                }
-                cout << endl;
+                    auxMatrix[lin + yQuadr*4 ][col + xQuadr*4] = matrix[lin][col];
+                }  
             }
-            cout << endl;
 
-                                    //TESTE
-                                               cout << "MAtrix Geral:\n";
-                                               for(int lin = 0; lin < 8; lin++)
-                                               {
+//                            //______________TESTE
+//                           cout << "MAtrix Aux:\n";
+//                           for(int lin = 0; lin < 8; lin++)
+//                           {
 
-                                                   for(int col = 0; col < 8; col++){
+//                               for(int col = 0; col < 8; col++){
 
-                                                      printf("%d ", absolutePattern[lin][col]);
-                                                   }
-                                                   cout << endl;
-                                               }
+//                                  printf("%d ", auxMatrix[lin][col]);
+//                               }
+//                               cout << endl;
+//                           }
 
-                                               cout << endl;
-                                               //END TESTE
+//                           cout << endl;
+//                           //_____________END TESTE
 
 
             //verifie if the new matrix is different, if is different change the matrix
-            for(int col=0; col < 8; col++)
+            for(int col=0; col < 4; col++)
             {
-                for(int lin=0; lin < 8; lin++)
+                for(int lin=0; lin < 4; lin++)
                 {
-                    if(auxMatrix[lin][col] != absolutePattern[lin][col]) // new data on the matrix if the condition is true
+                    if(auxMatrix[lin + yQuadr*4][col + xQuadr*4] != absolutePattern[lin + yQuadr*4][col + xQuadr*4]) // new data on the matrix if the condition is true
                     {
-                        lin = 8; //leave the for
-                        col = 8; //leave the for
+                        lin = 4; //leave the for
+                        col = 4; //leave the for
 
-                        for(int i = 0; i < 8; i++)
-                            for(int j = 0; j < 8; j++)
-                                absolutePattern[i][j] = absolutePattern[i][j] ^ auxMatrix[i][j];
-
-
-//                        //TESTE
-//                                   for(int col = 0; col < 8; col++)
-//                                   {
-
-//                                       for(int lin = 0; lin < 8; lin++){
-
-//                                          printf("%d ", absolutePattern[col][lin]);
-//                                       }
-//                                       cout << endl;
-//                                   }
-
-//                                   cout << endl;
-//                                   //END TESTE
+                        for(int i = 0; i < 4; i++)
+                            for(int j = 0; j < 4; j++)
+                            {absolutePattern[i + yQuadr*4][j + xQuadr*4] = absolutePattern[i + yQuadr*4][j + xQuadr*4] ^ auxMatrix[i + yQuadr*4][j + xQuadr*4];}
 
                         pthread_mutex_lock(&mAbsolutePattern);
 
