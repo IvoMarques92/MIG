@@ -37,6 +37,11 @@ CMig::CMig() {
     shm_open(shm_fn,O_CREAT|O_RDWR|O_TRUNC, S_IRWXU|S_IRWXG);
     sSoundGeneratorDaemon = sem_open(sem_fn, O_CREAT, 0644, 0);
     sem_close(sSoundGeneratorDaemon);
+
+    CLedMatrix *matrix = CLedMatrix::getInstance();
+    matrix->setQuadr(0,0);
+
+
 }
 
 CMig::~CMig()
@@ -180,8 +185,8 @@ void CMig::ISR(int sign)
     {
          /* Post to the semaphore to sample the sensors.*/
          sem_post (&sTimerTouchIn);
-         //sem_post (&sTimerIRSensor);
-         //sem_post (&sTimerSlideSensor);
+         sem_post (&sTimerIRSensor);
+         sem_post (&sTimerSlideSensor);
 
     }
 }
@@ -279,6 +284,8 @@ void *tTouchInFunction( void *ptr )
 //                                   //END TESTE
 
                         //pthread_cond_signal(&conTouchInDataAnalysis);
+                        //teste
+                         ledMatrix->setLedMatrix(absolutePattern);
                         //semaphore to tsoundgenerat
                         pthread_mutex_unlock(&mAbsolutePattern);
                         sem_post(&sTeste);
@@ -318,6 +325,77 @@ void *tIRSensorFunction( void *ptr )
     }
 }
 
+void processingDataSlide()
+{
+    static char * buffer = new char[4], cap1 = 0, cap2 = 0, cap3 = 0, cap4 = 0;
+    static char old1 = 0, old2 = 0, old3 = 0, old4 = 0;
+    static int count = 0;
+    static int x = 0, y = 0;
+
+
+    CSensors *sensors = CSensors::getInstance();
+    CLedMatrix *matrix = CLedMatrix::getInstance();
+
+    buffer = sensors->readHandSlideSensor();
+
+    // cout << (int)old1 << (int)old2 << (int)old3 << (int)old4 << endl;
+
+    cap1 = buffer[0];
+    cap2 = buffer[1];
+    cap3 = buffer[3];
+    cap4 = buffer[2];
+
+    if(cap1){ // slide right
+        if(old2)
+        {
+            x = 1;
+            matrix->setQuadr(x,y);
+        }
+        old1 = cap1;
+    }
+
+    if(cap2){ // slide left
+        if(old1)
+        {
+            x = 0;
+            matrix->setQuadr(x,y);
+        }
+        old2 = cap2;
+    }
+
+    if(cap3){ // slide top
+        if(old4)
+        {
+            y = 0;
+            matrix->setQuadr(x,y);
+        }
+        old3 = cap3;
+    }
+
+    if(cap4){ // slide low
+        if(old3)
+        {
+            y = 1;
+            matrix->setQuadr(x,y);
+        }
+        old4 = cap4;
+    }
+
+    if(count++ > 100) // if in one second the slide don't is complete, slide is ignore
+    {
+        count = 0;
+        old1 = 0;
+        old2 = 0;
+        old3 = 0;
+        old4 = 0;
+    }
+
+//    cout << (int)old1 << "->" << (int)cap1 << endl;
+//    cout << (int)old2 << "->" << (int)cap2 << endl;
+//    cout << (int)old3 << "->" << (int)cap3 << endl;
+//    cout << (int)old4 << "->" << (int)cap4 << endl << endl;
+}
+
 void *tSlideSensorFunction( void *ptr )
 {
     cout << "Hello tSlideSensorFunction" << endl;
@@ -327,11 +405,13 @@ void *tSlideSensorFunction( void *ptr )
         new semaphore post. */
         sem_wait (&sTimerSlideSensor);
 
-        pthread_mutex_lock(&mSlideDataAnalysis);
+        processingDataSlide();
 
-        pthread_cond_signal(&conSlideDataAnalysis);
+//        pthread_mutex_lock(&mSlideDataAnalysis);
 
-        pthread_mutex_unlock(&mSlideDataAnalysis);
+//        pthread_cond_signal(&conSlideDataAnalysis);
+
+//        pthread_mutex_unlock(&mSlideDataAnalysis);
     }
 }
 
@@ -344,79 +424,7 @@ void updateSound()
 //    pthread_mutex_unlock(&mDataAnalysisSoundGenerator);
 }
 
-void processingDataSlide()
-{
-    char * buffer = new char [4], cap1, cap2, cap3, cap4;
-    static char old1 = 0, old2 = 0, old3 = 0, old4 = 0;
-    static int count = 0;
-    int x = 0, y = 0;
 
-
-    CSensors *sensors = CSensors::getInstance();
-//    CHandSlideSensor *caps = CHandSlideSensor::getInstance();
-    CLedMatrix *matrix = CLedMatrix::getInstance();
-
-    buffer = sensors->readHandSlideSensor();
-
-    cap1 = buffer[0];
-    cap2 = buffer[1];
-    cap3 = buffer[2];
-    cap4 = buffer[3];
-
-    if(cap1){ // slide right
-        if(old1)
-        {
-            x = 1;
-            matrix->setQuadr(x,y);
-        }
-        old1 = cap1;
-    }
-
-    if(cap2){ // slide left
-        if(old2)
-        {
-            x = 0;
-            matrix->setQuadr(x,y);
-        }
-        old2 = cap2;
-    }
-
-    if(cap3){ // slide top
-        if(old3)   
-        {
-            y = 0;
-            matrix->setQuadr(x,y);
-        }
-        old3 = cap3;
-    }
-
-    if(cap4){ // slide low
-        if(old4)
-        {
-            y = 1;
-            matrix->setQuadr(x,y);
-        }
-        old4 = cap4;
-    }
-
-    if(count++ == 20) // if in one second the slide don't is complete, slide is ignore
-    {
-        old1 = 0;
-        old2 = 0;
-        old3 = 0;
-        old4 = 0;
-    }
-
-//    pthread_mutex_lock(&mDataAnalysisAbsolutePattern);
-
-
-
-//    pthread_cond_signal(&conDataAnalysisAbsolutePattern);
-
-//    pthread_mutex_unlock(&mDataAnalysisAbsolutePattern);
-
-    delete buffer;
-}
 
 void *tDataAnalysisFunction( void *ptr )
 {
@@ -436,7 +444,7 @@ void *tDataAnalysisFunction( void *ptr )
 
 //        if(!timeout3)
 //        {
-            processingDataSlide();
+//            processingDataSlide();
 //        }
 
 //        pthread_mutex_unlock(&mSlideDataAnalysis);
@@ -601,10 +609,10 @@ int CMig::run() {
     if(!initThreads())
     {
         pthread_join( tSoundGenerater, NULL);
-        //pthread_join( tDataAnalysis, NULL);
+        pthread_join( tDataAnalysis, NULL);
         pthread_join( tTouchIn, NULL);
 //        pthread_join( tIRSensor, NULL);
-//        pthread_join( tSlideSensor, NULL);
+        pthread_join( tSlideSensor, NULL);
 //        pthread_join( tAbsolutePattern, NULL);
         return 0;
     }
@@ -659,7 +667,7 @@ int CMig::initThreads() {
     /* define prioratie tAbsolutePattern */
     setupThread(4, &threadAttr, &threadParam);
     pthread_attr_setinheritsched (&threadAttr, PTHREAD_EXPLICIT_SCHED);
-    errortAbsolutePattern = pthread_create(&tAbsolutePattern,&threadAttr,tAbsolutePatternFunction,NULL);
+    //errortAbsolutePattern = pthread_create(&tAbsolutePattern,&threadAttr,tAbsolutePatternFunction,NULL);
 
     if((errortDataAnalysis != 0)&&(errortTouchIn != 0)&&(errortIRSensor != 0)&&(errortSlideSensor != 0)&&(errortSoundGenerater != 0)&&(errortAbsolutePattern != 0))
     {

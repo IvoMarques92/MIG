@@ -48,7 +48,7 @@ void CHandSlideSensor::closeHandSlideSensor() {
 * Return		 : None
 *******************************************************************************/
 char * CHandSlideSensor::readHandSlideSensor() {
-
+    char aux[4];
     capFile.read(buffer, 4);
 
     return buffer;
