@@ -162,11 +162,11 @@ void CMig::initSignal()
 
     signal(SIGALRM,ISR);
 
-    // 50ms interrupt
+    // 25ms interrupt
     itv.it_interval.tv_sec = 0;
-    itv.it_interval.tv_usec = 25000;//it_interval -> recarga
+    itv.it_interval.tv_usec = 200000;//it_interval -> recarga
     itv.it_value.tv_sec = 0;
-    itv.it_value.tv_usec = 25000; //only for the first timer expires
+    itv.it_value.tv_usec = 200000; //only for the first timer expires
 
     setitimer(ITIMER_REAL, &itv, NULL);	//ITIMER_REAL is for a SIGALRM
     return;
@@ -227,7 +227,7 @@ void *tTouchInFunction( void *ptr )
         }
         count++;
  //cout << endl;
-        pthread_mutex_lock(&mTouchInDataAnalysis);
+       // pthread_mutex_lock(&mTouchInDataAnalysis);
 
         if(count == 4)
         {
@@ -237,18 +237,43 @@ void *tTouchInFunction( void *ptr )
             //Get Quadrant
             xQuadr = ledMatrix->getQuadr() & 0x01;
             yQuadr = ((ledMatrix->getQuadr() >> 1) & 0x01);
+ cout << (int)xQuadr << ","<< (int)yQuadr << endl;
+
+            pthread_mutex_lock(&mAbsolutePattern);
 
             absolutePattern = absolute->getAbsolutePattern();
+
+            pthread_mutex_unlock(&mAbsolutePattern);
+
             auxMatrix = absolutePattern;
 
             //Set RelativePattern based on Quadrant
-            for(int col=0; col < 4; col++)
+            cout << "MAtrix Relativa:\n";
+            for(int lin=0; lin < 4; lin++)
             {
-                for(int lin=0; lin < 4; lin++)
+                for(int col=0; col < 4; col++)
                 {
-                    absolutePattern[col + xQuadr*4][lin + yQuadr*4] = matrix[col][lin];
+                    absolutePattern[lin + yQuadr*4 ][col + xQuadr*4] = matrix[lin][col];
+                    cout << (int)matrix[lin][col]<< " ";
                 }
+                cout << endl;
             }
+            cout << endl;
+
+                                    //TESTE
+                                               cout << "MAtrix Geral:\n";
+                                               for(int lin = 0; lin < 8; lin++)
+                                               {
+
+                                                   for(int col = 0; col < 8; col++){
+
+                                                      printf("%d ", absolutePattern[lin][col]);
+                                                   }
+                                                   cout << endl;
+                                               }
+
+                                               cout << endl;
+                                               //END TESTE
 
 
             //verifie if the new matrix is different, if is different change the matrix
@@ -265,9 +290,6 @@ void *tTouchInFunction( void *ptr )
                             for(int j = 0; j < 8; j++)
                                 absolutePattern[i][j] = absolutePattern[i][j] ^ auxMatrix[i][j];
 
-                        pthread_mutex_lock(&mAbsolutePattern);
-
-                        absolute->setAbsolutePattern(absolutePattern);
 
 //                        //TESTE
 //                                   for(int col = 0; col < 8; col++)
@@ -283,10 +305,12 @@ void *tTouchInFunction( void *ptr )
 //                                   cout << endl;
 //                                   //END TESTE
 
-                        //pthread_cond_signal(&conTouchInDataAnalysis);
-                        //teste
-                         ledMatrix->setLedMatrix(absolutePattern);
-                         ledMatrix->writeLedMatrix();
+                        pthread_mutex_lock(&mAbsolutePattern);
+
+                        absolute->setAbsolutePattern(absolutePattern);
+
+                        ledMatrix->setLedMatrix(absolutePattern);                       // !!!!!!Atençao
+                        ledMatrix->writeLedMatrix();
                         //semaphore to tsoundgenerat
                         pthread_mutex_unlock(&mAbsolutePattern);
                         sem_post(&sTeste);
@@ -297,7 +321,7 @@ void *tTouchInFunction( void *ptr )
 
          }
 
-        pthread_mutex_unlock(&mTouchInDataAnalysis);
+       // pthread_mutex_unlock(&mTouchInDataAnalysis);
 
     }
 }
