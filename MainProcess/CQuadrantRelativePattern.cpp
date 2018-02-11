@@ -25,10 +25,13 @@ void CQuadrantRelativePattern::writeQuadrant() {
         perror("ERROR: Can not open the device MIG4Leds");
 
     cout << "\n!!! LAYER" << layer << "!!!!"<< endl;
+
     if (write(fd, tx, 1) != 1)
         perror("ERROR: Can not write on the MIG4Leds");
 
     close(fd);
+
+    cout << " erroooooooooooooooo"<< endl;
 
     return;
 }

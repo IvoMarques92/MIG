@@ -608,7 +608,7 @@ int CMig::initThreads() {
     /* define prioratie tTouchIn */
     setupThread(3, &threadAttr, &threadParam);
     pthread_attr_setinheritsched (&threadAttr, PTHREAD_EXPLICIT_SCHED);
-    //errortTouchIn = pthread_create(&tTouchIn,&threadAttr,tTouchInFunction,NULL);
+    errortTouchIn = pthread_create(&tTouchIn,&threadAttr,tTouchInFunction,NULL);
 
     /* define prioratie tIRSensor */
     setupThread(3, &threadAttr, &threadParam);
@@ -618,12 +618,12 @@ int CMig::initThreads() {
     /* define prioratie tSlideSensor */
     setupThread(3, &threadAttr, &threadParam);
     pthread_attr_setinheritsched (&threadAttr, PTHREAD_EXPLICIT_SCHED);
-    //errortSlideSensor = pthread_create(&tSlideSensor,&threadAttr,tSlideSensorFunction,NULL);
+    errortSlideSensor = pthread_create(&tSlideSensor,&threadAttr,tSlideSensorFunction,NULL);
 
     /* define prioratie tAbsolutePattern */
     setupThread(4, &threadAttr, &threadParam);
     pthread_attr_setinheritsched (&threadAttr, PTHREAD_EXPLICIT_SCHED);
-    //errortAbsolutePattern = pthread_create(&tAbsolutePattern,&threadAttr,tAbsolutePatternFunction,NULL);
+    errortAbsolutePattern = pthread_create(&tAbsolutePattern,&threadAttr,tAbsolutePatternFunction,NULL);
 
     if((errortDataAnalysis != 0)&&(errortTouchIn != 0)&&(errortIRSensor != 0)&&(errortSlideSensor != 0)&&(errortSoundGenerater != 0)&&(errortAbsolutePattern != 0))
     {

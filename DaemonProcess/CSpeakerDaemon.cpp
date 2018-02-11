@@ -80,20 +80,20 @@ void CSpeakerDaemon::sharedMemory()
     /* Open the shared memory object */
     if ( (shmdes = shm_open(shmFile.c_str(), O_RDWR, 0)) == -1 ) {
         syslog(LOG_INFO,"shm_open failure");
-        exit(-1);
+       // exit(-1);
     }
 
     sharedMemorySize = 4096 * sysconf(_SC_PAGE_SIZE);
     if((shmptr = (char *) mmap(0, sharedMemorySize, PROT_WRITE|PROT_READ, MAP_SHARED,shmdes,0)) == (caddr_t) -1){
         syslog(LOG_INFO,"mmap failure");
-        exit(-1);
+       // exit(-1);
      }
 
     /* Open the Semaphore */
     sDaemon = sem_open(semFile.c_str(), 0, 0644, 0);
     if(sDaemon == (void*) -1) {
        syslog(LOG_INFO,"sem_open failure");
-       exit(-1);
+      // exit(-1);
     }
 
     /* Lock the semaphore */
