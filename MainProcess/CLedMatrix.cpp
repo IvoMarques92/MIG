@@ -121,6 +121,7 @@ void CLedMatrix::setQuadr(int x, int y)
     {
         for(int lin=0; lin < 4; lin++)
         {
+            //this equality has an assimetry because the HW is in wrong orientation
             this->relativeMatrix[col][lin] = matrix[lin + y*4][col + x*4];
         }
     }

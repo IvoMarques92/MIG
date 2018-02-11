@@ -298,11 +298,12 @@ void *tTouchInFunction( void *ptr )
                         pthread_mutex_lock(&mAbsolutePattern);
 
                         absolute->setAbsolutePattern(absolutePattern);
-
                         ledMatrix->setLedMatrix(absolutePattern);                       // !!!!!!Atençao
                         ledMatrix->writeLedMatrix();
-                        //semaphore to tsoundgenerat
+
                         pthread_mutex_unlock(&mAbsolutePattern);
+
+                        //semaphore to tsoundgenerat
                         sem_post(&sTeste);
                     }
                 }
@@ -368,8 +369,7 @@ void processingDataSlide()
         }
         old1 = cap1;
     }
-
-    if(cap2){ // slide left
+    else if(cap2){ // slide left
         if(old1)
         {
             x = 0;
@@ -386,8 +386,7 @@ void processingDataSlide()
         }
         old3 = cap3;
     }
-
-    if(cap4){ // slide low
+    else if(cap4){ // slide low
         if(old3)
         {
             y = 1;
@@ -396,7 +395,7 @@ void processingDataSlide()
         old4 = cap4;
     }
 
-    if(count++ > 100) // if in one second the slide don't is complete, slide is ignore
+    if(count++ > 60) // if in one second the slide don't is complete, slide is ignore
     {
         count = 0;
         old1 = 0;
@@ -513,81 +512,81 @@ void *tSoundGeneraterFunction( void *ptr )
 
         /**+++++++++++++++++++++CGenerateSound+++++++++++++++++++*/
 
-        char shm_fn[] = "shmDaemon";
-        char sem_fn[] = "semaphoreDaemon";
+//        char shm_fn[] = "shmDaemon";
+//        char sem_fn[] = "semaphoreDaemon";
 
-        CGenerateSound * sound = new CGenerateSound();
-        CAbsolutePattern *absolute = CAbsolutePattern::getInstance();
+//        CGenerateSound * sound = new CGenerateSound();
+//        CAbsolutePattern *absolute = CAbsolutePattern::getInstance();
 
-        pthread_mutex_lock(&mAbsolutePattern);
+//        pthread_mutex_lock(&mAbsolutePattern);
 
-        sound->setAbsolutePattern(absolute->getAbsolutePattern());
+//        sound->setAbsolutePattern(absolute->getAbsolutePattern());
 
-        pthread_mutex_unlock(&mAbsolutePattern);
+//        pthread_mutex_unlock(&mAbsolutePattern);
 
-        sound->generateSound(1);
+//        sound->generateSound(1);
 
-        /**+++++++++++++END of the CGenerateSound+++++++++++++++++*/
-        /**+++++++++++++++++++Shared Memory+++++++++++++++++++++++*/
-        CSensors *sensors = CSensors::getInstance();
-        CConvertWav wav;
+//        /**+++++++++++++END of the CGenerateSound+++++++++++++++++*/
+//        /**+++++++++++++++++++Shared Memory+++++++++++++++++++++++*/
+//        CSensors *sensors = CSensors::getInstance();
+//        CConvertWav wav;
 
-        wav.convertWavFile( sound->changeSpeed(sensors->getSpeed()));
+//        wav.convertWavFile( sound->changeSpeed(sensors->getSpeed()));
 
-        int size, sharedMemorySize, index;
-        unsigned int shmdes, mode;
-        char* shmptr;
-        char *pt;
+//        int size, sharedMemorySize, index;
+//        unsigned int shmdes, mode;
+//        char* shmptr;
+//        char *pt;
 
-        size = wav.getSubChunk();
-        pt = (char *) &size;
-        mode = S_IRWXU|S_IRWXG;
-        /* Open the shared memory object */
-        if ( (shmdes = shm_open(shm_fn,O_CREAT|O_RDWR|O_TRUNC, mode)) == -1 ) {
-             perror("shm_open failure");
-             exit(-1);
-        }
-        /* Preallocate a shared memory area by determine the current
-        value of a configurable system limit for pagesize*/
-        sharedMemorySize = 4096 * sysconf(_SC_PAGE_SIZE);
-        if(ftruncate(shmdes, sharedMemorySize) == -1){
-            perror("ftruncate failure");
-            exit(-1);
-        }
-        if((shmptr =(char *)mmap(0, sharedMemorySize, PROT_WRITE|PROT_READ, MAP_SHARED,shmdes,0)) == (caddr_t) -1) {
-            perror("mmap failure");
-            exit(-1);
-        }
-        /* Create a semaphore in locked state */
-        sSoundGeneratorDaemon = sem_open(sem_fn, O_CREAT, 0644, 0);
-        if(sSoundGeneratorDaemon == (void*)-1) {
-          perror("sem_open failure");
-          exit(-1);
-        }
+//        size = wav.getSubChunk();
+//        pt = (char *) &size;
+//        mode = S_IRWXU|S_IRWXG;
+//        /* Open the shared memory object */
+//        if ( (shmdes = shm_open(shm_fn,O_CREAT|O_RDWR|O_TRUNC, mode)) == -1 ) {
+//             perror("shm_open failure");
+//             exit(-1);
+//        }
+//        /* Preallocate a shared memory area by determine the current
+//        value of a configurable system limit for pagesize*/
+//        sharedMemorySize = 4096 * sysconf(_SC_PAGE_SIZE);
+//        if(ftruncate(shmdes, sharedMemorySize) == -1){
+//            perror("ftruncate failure");
+//            exit(-1);
+//        }
+//        if((shmptr =(char *)mmap(0, sharedMemorySize, PROT_WRITE|PROT_READ, MAP_SHARED,shmdes,0)) == (caddr_t) -1) {
+//            perror("mmap failure");
+//            exit(-1);
+//        }
+//        /* Create a semaphore in locked state */
+//        sSoundGeneratorDaemon = sem_open(sem_fn, O_CREAT, 0644, 0);
+//        if(sSoundGeneratorDaemon == (void*)-1) {
+//          perror("sem_open failure");
+//          exit(-1);
+//        }
 
-        shmptr[0] = *pt++;
-        shmptr[1] = *pt++;
-        shmptr[2] = *pt++;
-        shmptr[3] = *pt;
+//        shmptr[0] = *pt++;
+//        shmptr[1] = *pt++;
+//        shmptr[2] = *pt++;
+//        shmptr[3] = *pt;
 
-        char *bufferOut = (char *) wav.getPCM();
+//        char *bufferOut = (char *) wav.getPCM();
 
-        /* Access to the shared memory area */
-        for(index = 4; index < size + 4; index++) {
-            shmptr[index]=bufferOut[index - 4];
-        }
+//        /* Access to the shared memory area */
+//        for(index = 4; index < size + 4; index++) {
+//            shmptr[index]=bufferOut[index - 4];
+//        }
 
-        /* Release the semaphore lock */
-        sem_post(sSoundGeneratorDaemon);
-        munmap(shmptr, sharedMemorySize);
-        /* Close the shared memory object */
-        close(shmdes);
-        /* Close the Semaphore */
-        sem_close(sSoundGeneratorDaemon);
-        /* Delete the shared memory object */
-        //shm_unlink(shm_fn);
+//        /* Release the semaphore lock */
+//        sem_post(sSoundGeneratorDaemon);
+//        munmap(shmptr, sharedMemorySize);
+//        /* Close the shared memory object */
+//        close(shmdes);
+//        /* Close the Semaphore */
+//        sem_close(sSoundGeneratorDaemon);
+//        /* Delete the shared memory object */
+//        //shm_unlink(shm_fn);
 
-        /**+++++++++++++END of test of the Shared Memory++++++++++++++++++*/
+//        /**+++++++++++++END of test of the Shared Memory++++++++++++++++++*/
 
 
     }
@@ -624,7 +623,7 @@ int CMig::run() {
     if(!initThreads())
     {
         pthread_join( tSoundGenerater, NULL);
-        pthread_join( tDataAnalysis, NULL);
+  //      pthread_join( tDataAnalysis, NULL);
         pthread_join( tTouchIn, NULL);
 //        pthread_join( tIRSensor, NULL);
         pthread_join( tSlideSensor, NULL);
@@ -662,7 +661,7 @@ int CMig::initThreads() {
     /* define prioratie tDataAnalysis */
     setupThread(2, &threadAttr, &threadParam);
     pthread_attr_setinheritsched (&threadAttr, PTHREAD_EXPLICIT_SCHED);
-    errortDataAnalysis = pthread_create(&tDataAnalysis,&threadAttr,tDataAnalysisFunction,NULL);
+    //errortDataAnalysis = pthread_create(&tDataAnalysis,&threadAttr,tDataAnalysisFunction,NULL);
 
     /* define prioratie tTouchIn */
     setupThread(1, &threadAttr, &threadParam);
