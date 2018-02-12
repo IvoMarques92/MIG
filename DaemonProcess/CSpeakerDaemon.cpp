@@ -22,12 +22,12 @@ CSpeakerDaemon::~CSpeakerDaemon()
 void CSpeakerDaemon::initSpeaker() {
 
     if ((snd_pcm_open(&handle, device.c_str(), SND_PCM_STREAM_PLAYBACK, 0)) < 0) {
-            perror("Playback open error");
-            exit(EXIT_FAILURE);
+            syslog(LOG_INFO, "Playback open error");
+            //exit(EXIT_FAILURE);
     }
     if ((snd_pcm_set_params(handle,SND_PCM_FORMAT_S16_LE,SND_PCM_ACCESS_RW_INTERLEAVED, 2, 44100, 1, 500000)) < 0) {   /* 0.5sec */
-            perror("Playback open error");
-            exit(EXIT_FAILURE);
+            syslog(LOG_INFO, "Playback open error");
+           // exit(EXIT_FAILURE);
     }
 
     return;
@@ -80,20 +80,20 @@ void CSpeakerDaemon::sharedMemory()
     /* Open the shared memory object */
     if ( (shmdes = shm_open(shmFile.c_str(), O_RDWR, 0)) == -1 ) {
         syslog(LOG_INFO,"shm_open failure");
-        exit(-1);
+       // exit(-1);
     }
 
     sharedMemorySize = 4096 * sysconf(_SC_PAGE_SIZE);
     if((shmptr = (char *) mmap(0, sharedMemorySize, PROT_WRITE|PROT_READ, MAP_SHARED,shmdes,0)) == (caddr_t) -1){
         syslog(LOG_INFO,"mmap failure");
-        exit(-1);
+       // exit(-1);
      }
 
     /* Open the Semaphore */
     sDaemon = sem_open(semFile.c_str(), 0, 0644, 0);
     if(sDaemon == (void*) -1) {
        syslog(LOG_INFO,"sem_open failure");
-       exit(-1);
+      // exit(-1);
     }
 
     /* Lock the semaphore */

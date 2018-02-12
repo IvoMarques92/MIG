@@ -64,6 +64,11 @@ string CGenerateSound::getPathSpeedEffect()
     return pathSpeedEffect;
 }
 
+#include <stdio.h>
+#include <iostream>
+
+using namespace std;
+
 /*******************************************************************************
 * Function Name  : setAbsolutePattern
 * Description    : set the absolutePattern
@@ -73,6 +78,19 @@ string CGenerateSound::getPathSpeedEffect()
 *******************************************************************************/
 void CGenerateSound::setAbsolutePattern(vector<vector<char>> absolutePattern) {
     absoluteMatrix = absolutePattern;
+
+//    for(int col = 0; col < 8; col++)
+//    {
+
+//        for(int lin = 0; lin < 8; lin++){
+
+//           printf("%d ", absoluteMatrix[col][lin]);
+//        }
+//        cout << endl;
+//    }
+
+//    cout << endl;
+
     return;
 }
 
@@ -87,9 +105,9 @@ void CGenerateSound::setAbsolutePattern(vector<vector<char>> absolutePattern) {
 string CGenerateSound::changeSpeed(float speed)
 {
     string soxSpeed;
-    if(speed > 8) speed = 8;
+    if(speed > 8) speed = 8; //max speed
 
-    if(speed < 1)
+    if(speed <= 1)
     {
         pathSpeedEffect = pathWavAbsolutePatternFIle;
     }
@@ -131,6 +149,7 @@ string CGenerateSound::changeTempo(float tempo)
     return pathTempoEffect;
 }
 
+
 /*******************************************************************************
 * Function Name  : generateSound
 * Description    : This function accordly with the effect, add and concatenate
@@ -142,11 +161,30 @@ string CGenerateSound::changeTempo(float tempo)
 *******************************************************************************/
 string CGenerateSound::generateSound(unsigned char effect) {
 
+    char aux;
+    vector<vector<char>>  auxMa;
+
+    auxMa.resize(8);
+    for ( int i = 0 ; i < 8 ; i++ )
+        auxMa[i].resize(8);
+
+    auxMa = absoluteMatrix;
+
+    for (int i = 0; i < 8; i++) {
+      for (int j = i+1; j < 8; j++) {
+        if (j != i) {
+            aux = auxMa[i][j];
+            auxMa[i][j] = auxMa[j][i];
+            auxMa[j][i] = aux;
+        }
+      }
+    }
+
     /*Add sound of each element of each column*/
     for(int i = 0; i < 8; i++)
     {
         string columnSound, soxAdd;
-        columnSound = this->getEffects(effect, absoluteMatrix[i]);
+        columnSound = this->getEffects(effect, auxMa[i]);
         if(columnSound == "erro")
             return "erro";
         soxAdd = "sox -m " + empty + empty + columnSound + " /root/sounds/columns/column" + to_string(i) + ".wav";

@@ -1,8 +1,8 @@
-cmd_/home/cristiano/Desktop/project_programs/Device_Drivers/touchIN/touchINModule.o := /home/cristiano/buildroot-2017.02.5/output/host/usr/bin/arm-buildroot-linux-uclibcgnueabihf-gcc -Wp,-MD,/home/cristiano/Desktop/project_programs/Device_Drivers/touchIN/.touchINModule.o.d  -nostdinc -isystem /home/cristiano/buildroot-2017.02.5/output/host/usr/lib/gcc/arm-buildroot-linux-uclibcgnueabihf/5.4.0/include -I./arch/arm/include -Iarch/arm/include/generated/uapi -Iarch/arm/include/generated  -Iinclude -I./arch/arm/include/uapi -Iarch/arm/include/generated/uapi -I./include/uapi -Iinclude/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -mlittle-endian -Iarch/arm/mach-bcm2709/include -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -fno-PIE -fno-dwarf2-cfi-asm -fno-omit-frame-pointer -mapcs -mno-sched-prolog -fno-ipa-sra -mabi=aapcs-linux -mno-thumb-interwork -mfpu=vfp -funwind-tables -marm -D__LINUX_ARM_ARCH__=7 -march=armv7-a -msoft-float -Uarm -fno-delete-null-pointer-checks -Wno-maybe-uninitialized -O2 --param=allow-store-data-races=0 -Wframe-larger-than=1024 -fno-stack-protector -Wno-unused-but-set-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -pg -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -DCC_HAVE_ASM_GOTO  -DMODULE  -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(touchINModule)"  -D"KBUILD_MODNAME=KBUILD_STR(touchINModule)" -c -o /home/cristiano/Desktop/project_programs/Device_Drivers/touchIN/.tmp_touchINModule.o /home/cristiano/Desktop/project_programs/Device_Drivers/touchIN/touchINModule.c
+cmd_/home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/touchIN/touchINModule.o := /home/cristiano/buildroot-2017.02.5/output/host/usr/bin/arm-buildroot-linux-uclibcgnueabihf-gcc -Wp,-MD,/home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/touchIN/.touchINModule.o.d  -nostdinc -isystem /home/cristiano/buildroot-2017.02.5/output/host/usr/lib/gcc/arm-buildroot-linux-uclibcgnueabihf/5.4.0/include -I./arch/arm/include -Iarch/arm/include/generated/uapi -Iarch/arm/include/generated  -Iinclude -I./arch/arm/include/uapi -Iarch/arm/include/generated/uapi -I./include/uapi -Iinclude/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -mlittle-endian -Iarch/arm/mach-bcm2709/include -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -fno-PIE -fno-dwarf2-cfi-asm -fno-omit-frame-pointer -mapcs -mno-sched-prolog -fno-ipa-sra -mabi=aapcs-linux -mno-thumb-interwork -mfpu=vfp -funwind-tables -marm -D__LINUX_ARM_ARCH__=7 -march=armv7-a -msoft-float -Uarm -fno-delete-null-pointer-checks -Wno-maybe-uninitialized -O2 --param=allow-store-data-races=0 -Wframe-larger-than=1024 -fno-stack-protector -Wno-unused-but-set-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -pg -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -DCC_HAVE_ASM_GOTO  -DMODULE  -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(touchINModule)"  -D"KBUILD_MODNAME=KBUILD_STR(touchINModule)" -c -o /home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/touchIN/.tmp_touchINModule.o /home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/touchIN/touchINModule.c
 
-source_/home/cristiano/Desktop/project_programs/Device_Drivers/touchIN/touchINModule.o := /home/cristiano/Desktop/project_programs/Device_Drivers/touchIN/touchINModule.c
+source_/home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/touchIN/touchINModule.o := /home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/touchIN/touchINModule.c
 
-deps_/home/cristiano/Desktop/project_programs/Device_Drivers/touchIN/touchINModule.o := \
+deps_/home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/touchIN/touchINModule.o := \
   include/linux/module.h \
     $(wildcard include/config/modules.h) \
     $(wildcard include/config/sysfs.h) \
@@ -546,17 +546,7 @@ deps_/home/cristiano/Desktop/project_programs/Device_Drivers/touchIN/touchINModu
     $(wildcard include/config/arm/dma/use/iommu.h) \
     $(wildcard include/config/arch/omap.h) \
   include/linux/pm_wakeup.h \
-  include/linux/slab.h \
-    $(wildcard include/config/debug/slab.h) \
-    $(wildcard include/config/kmemcheck.h) \
-    $(wildcard include/config/failslab.h) \
-    $(wildcard include/config/slab.h) \
-    $(wildcard include/config/slub.h) \
-    $(wildcard include/config/slob.h) \
-  include/linux/kmemleak.h \
-    $(wildcard include/config/debug/kmemleak.h) \
-  include/linux/kasan.h \
 
-/home/cristiano/Desktop/project_programs/Device_Drivers/touchIN/touchINModule.o: $(deps_/home/cristiano/Desktop/project_programs/Device_Drivers/touchIN/touchINModule.o)
+/home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/touchIN/touchINModule.o: $(deps_/home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/touchIN/touchINModule.o)
 
-$(deps_/home/cristiano/Desktop/project_programs/Device_Drivers/touchIN/touchINModule.o):
+$(deps_/home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/touchIN/touchINModule.o):

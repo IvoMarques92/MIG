@@ -1,9 +1,8 @@
-cmd_/home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/capSensorsDeviceDriver/capSensorsModule.mod.o := /home/cristiano/buildroot-2017.02.5/output/host/usr/bin/arm-buildroot-linux-uclibcgnueabihf-gcc -Wp,-MD,/home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/capSensorsDeviceDriver/.capSensorsModule.mod.o.d  -nostdinc -isystem /home/cristiano/buildroot-2017.02.5/output/host/usr/lib/gcc/arm-buildroot-linux-uclibcgnueabihf/5.4.0/include -I./arch/arm/include -Iarch/arm/include/generated/uapi -Iarch/arm/include/generated  -Iinclude -I./arch/arm/include/uapi -Iarch/arm/include/generated/uapi -I./include/uapi -Iinclude/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -mlittle-endian -Iarch/arm/mach-bcm2709/include -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -fno-PIE -fno-dwarf2-cfi-asm -fno-omit-frame-pointer -mapcs -mno-sched-prolog -fno-ipa-sra -mabi=aapcs-linux -mno-thumb-interwork -mfpu=vfp -funwind-tables -marm -D__LINUX_ARM_ARCH__=7 -march=armv7-a -msoft-float -Uarm -fno-delete-null-pointer-checks -Wno-maybe-uninitialized -O2 --param=allow-store-data-races=0 -Wframe-larger-than=1024 -fno-stack-protector -Wno-unused-but-set-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -pg -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -DCC_HAVE_ASM_GOTO  -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(capSensorsModule.mod)"  -D"KBUILD_MODNAME=KBUILD_STR(capSensorsModule)" -DMODULE  -c -o /home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/capSensorsDeviceDriver/capSensorsModule.mod.o /home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/capSensorsDeviceDriver/capSensorsModule.mod.c
+cmd_/home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/4LedsDeviceDriver/4LedModule.o := /home/cristiano/buildroot-2017.02.5/output/host/usr/bin/arm-buildroot-linux-uclibcgnueabihf-gcc -Wp,-MD,/home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/4LedsDeviceDriver/.4LedModule.o.d  -nostdinc -isystem /home/cristiano/buildroot-2017.02.5/output/host/usr/lib/gcc/arm-buildroot-linux-uclibcgnueabihf/5.4.0/include -I./arch/arm/include -Iarch/arm/include/generated/uapi -Iarch/arm/include/generated  -Iinclude -I./arch/arm/include/uapi -Iarch/arm/include/generated/uapi -I./include/uapi -Iinclude/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -mlittle-endian -Iarch/arm/mach-bcm2709/include -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -fno-PIE -fno-dwarf2-cfi-asm -fno-omit-frame-pointer -mapcs -mno-sched-prolog -fno-ipa-sra -mabi=aapcs-linux -mno-thumb-interwork -mfpu=vfp -funwind-tables -marm -D__LINUX_ARM_ARCH__=7 -march=armv7-a -msoft-float -Uarm -fno-delete-null-pointer-checks -Wno-maybe-uninitialized -O2 --param=allow-store-data-races=0 -Wframe-larger-than=1024 -fno-stack-protector -Wno-unused-but-set-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -pg -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -DCC_HAVE_ASM_GOTO  -DMODULE  -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(4LedModule)"  -D"KBUILD_MODNAME=KBUILD_STR(4LedModule)" -c -o /home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/4LedsDeviceDriver/.tmp_4LedModule.o /home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/4LedsDeviceDriver/4LedModule.c
 
-source_/home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/capSensorsDeviceDriver/capSensorsModule.mod.o := /home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/capSensorsDeviceDriver/capSensorsModule.mod.c
+source_/home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/4LedsDeviceDriver/4LedModule.o := /home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/4LedsDeviceDriver/4LedModule.c
 
-deps_/home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/capSensorsDeviceDriver/capSensorsModule.mod.o := \
-    $(wildcard include/config/module/unload.h) \
+deps_/home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/4LedsDeviceDriver/4LedModule.o := \
   include/linux/module.h \
     $(wildcard include/config/modules.h) \
     $(wildcard include/config/sysfs.h) \
@@ -18,6 +17,7 @@ deps_/home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/capSensorsDevice
     $(wildcard include/config/event/tracing.h) \
     $(wildcard include/config/ftrace/mcount/record.h) \
     $(wildcard include/config/livepatch.h) \
+    $(wildcard include/config/module/unload.h) \
     $(wildcard include/config/constructors.h) \
     $(wildcard include/config/debug/set/module/ronx.h) \
   include/linux/list.h \
@@ -435,9 +435,111 @@ deps_/home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/capSensorsDevice
     $(wildcard include/config/have/mod/arch/specific.h) \
     $(wildcard include/config/modules/use/elf/rel.h) \
     $(wildcard include/config/modules/use/elf/rela.h) \
-  include/linux/vermagic.h \
-  include/generated/utsrelease.h \
+  arch/arm/include/asm/io.h \
+    $(wildcard include/config/pci.h) \
+    $(wildcard include/config/need/mach/io/h.h) \
+    $(wildcard include/config/pcmcia/soc/common.h) \
+    $(wildcard include/config/isa.h) \
+    $(wildcard include/config/pccard.h) \
+  include/linux/blk_types.h \
+    $(wildcard include/config/block.h) \
+    $(wildcard include/config/blk/cgroup.h) \
+    $(wildcard include/config/blk/dev/integrity.h) \
+  include/asm-generic/pci_iomap.h \
+    $(wildcard include/config/no/generic/pci/ioport/map.h) \
+    $(wildcard include/config/generic/pci/iomap.h) \
+  include/xen/xen.h \
+    $(wildcard include/config/xen.h) \
+    $(wildcard include/config/xen/dom0.h) \
+    $(wildcard include/config/xen/pvh.h) \
+  arch/arm/mach-bcm2709/include/mach/io.h \
+  include/asm-generic/io.h \
+    $(wildcard include/config/generic/iomap.h) \
+    $(wildcard include/config/has/ioport/map.h) \
+  include/linux/vmalloc.h \
+  include/linux/ioport.h \
+  arch/arm/mach-bcm2709/include/mach/platform.h \
+  include/linux/fs.h \
+    $(wildcard include/config/fs/posix/acl.h) \
+    $(wildcard include/config/security.h) \
+    $(wildcard include/config/cgroup/writeback.h) \
+    $(wildcard include/config/ima.h) \
+    $(wildcard include/config/fsnotify.h) \
+    $(wildcard include/config/epoll.h) \
+    $(wildcard include/config/file/locking.h) \
+    $(wildcard include/config/quota.h) \
+    $(wildcard include/config/fs/dax.h) \
+    $(wildcard include/config/migration.h) \
+  include/linux/kdev_t.h \
+  include/uapi/linux/kdev_t.h \
+  include/linux/dcache.h \
+  include/linux/rculist.h \
+  include/linux/rculist_bl.h \
+  include/linux/list_bl.h \
+  include/linux/bit_spinlock.h \
+  include/linux/lockref.h \
+    $(wildcard include/config/arch/use/cmpxchg/lockref.h) \
+  include/linux/path.h \
+  include/linux/list_lru.h \
+    $(wildcard include/config/memcg/kmem.h) \
+  include/linux/shrinker.h \
+  include/linux/radix-tree.h \
+  include/linux/pid.h \
+  include/linux/capability.h \
+  include/uapi/linux/capability.h \
+  include/linux/semaphore.h \
+  include/uapi/linux/fiemap.h \
+  include/linux/migrate_mode.h \
+  include/linux/percpu-rwsem.h \
+  include/linux/rcu_sync.h \
+  include/uapi/linux/fs.h \
+  include/uapi/linux/limits.h \
+  include/uapi/linux/ioctl.h \
+  arch/arm/include/generated/asm/ioctl.h \
+  include/asm-generic/ioctl.h \
+  include/uapi/asm-generic/ioctl.h \
+  include/linux/quota.h \
+    $(wildcard include/config/quota/netlink/interface.h) \
+  include/linux/percpu_counter.h \
+  include/uapi/linux/dqblk_xfs.h \
+  include/linux/dqblk_v1.h \
+  include/linux/dqblk_v2.h \
+  include/linux/dqblk_qtree.h \
+  include/linux/projid.h \
+  include/uapi/linux/quota.h \
+  include/linux/nfs_fs_i.h \
+  include/linux/fcntl.h \
+  include/uapi/linux/fcntl.h \
+  arch/arm/include/uapi/asm/fcntl.h \
+  include/uapi/asm-generic/fcntl.h \
+  include/linux/cdev.h \
+  include/linux/device.h \
+    $(wildcard include/config/debug/devres.h) \
+    $(wildcard include/config/generic/msi/irq/domain.h) \
+    $(wildcard include/config/pinctrl.h) \
+    $(wildcard include/config/generic/msi/irq.h) \
+    $(wildcard include/config/dma/cma.h) \
+    $(wildcard include/config/of.h) \
+    $(wildcard include/config/devtmpfs.h) \
+    $(wildcard include/config/sysfs/deprecated.h) \
+  include/linux/klist.h \
+  include/linux/pinctrl/devinfo.h \
+    $(wildcard include/config/pm.h) \
+  include/linux/pinctrl/consumer.h \
+  include/linux/seq_file.h \
+  include/linux/pinctrl/pinctrl-state.h \
+  include/linux/pm.h \
+    $(wildcard include/config/vt/console/sleep.h) \
+    $(wildcard include/config/pm/clk.h) \
+    $(wildcard include/config/pm/generic/domains.h) \
+  include/linux/ratelimit.h \
+  arch/arm/include/asm/device.h \
+    $(wildcard include/config/dmabounce.h) \
+    $(wildcard include/config/iommu/api.h) \
+    $(wildcard include/config/arm/dma/use/iommu.h) \
+    $(wildcard include/config/arch/omap.h) \
+  include/linux/pm_wakeup.h \
 
-/home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/capSensorsDeviceDriver/capSensorsModule.mod.o: $(deps_/home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/capSensorsDeviceDriver/capSensorsModule.mod.o)
+/home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/4LedsDeviceDriver/4LedModule.o: $(deps_/home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/4LedsDeviceDriver/4LedModule.o)
 
-$(deps_/home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/capSensorsDeviceDriver/capSensorsModule.mod.o):
+$(deps_/home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/4LedsDeviceDriver/4LedModule.o):

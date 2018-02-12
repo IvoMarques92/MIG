@@ -4,11 +4,12 @@
 
 CConvertWav::CConvertWav() {
 
+    wavData = malloc(1); //just to initialize
 }
 
 CConvertWav::~CConvertWav()
 {
-
+    free(wavData);
 }
 
 
@@ -36,9 +37,11 @@ void CConvertWav::convertWavFile(string pathNameFile) {
     if (wav_in)
     {
         fread(wavPtr, 1, sizeof(wav), wav_in);
-        wavData=malloc(wav.subchunk2_size);
+        wavData=realloc(wavData, wav.subchunk2_size);
         fread(wavData,wav.bits_per_sample/8,wav.subchunk2_size,wav_in);
     }
+    else
+        perror("Error Open convertWavFile");
 
     return;
 }

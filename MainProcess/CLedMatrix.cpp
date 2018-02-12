@@ -1,4 +1,7 @@
 #include "CLedMatrix.h"
+#include <iostream>
+
+using namespace std;
 
 CLedMatrix::CLedMatrix()
     :CQuadrantRelativePattern(), CRelativePattern()
@@ -11,7 +14,7 @@ CLedMatrix::CLedMatrix()
 
     fd = open(device.c_str(), O_RDWR);
     if(fd < 0)
-        printf("ERROR: Can not open the device0.0");
+        perror("ERROR: Can not open the device0.0");
 
     initSPI();
 
@@ -54,8 +57,9 @@ void CLedMatrix::writeLedMatrix(void) {
     for(int col = 1; col <= 8; col++)
     {
         data=0x00;
-        for(int lin = 0; lin <= 7; lin++)
+        for(int lin = 0; lin <= 7; lin++){
             data = data | ((matrix[col-1][lin]&0x01) << lin);
+        }
         matrixWrite(col, data);
     }
     close(fd);
@@ -76,7 +80,20 @@ void CLedMatrix::writeLedMatrix(void) {
 *******************************************************************************/
 void CLedMatrix::setLedMatrix(vector<vector<char> > newMatrix) {
     int xQuadr, yQuadr;
-    matrix = newMatrix;
+
+    vector<vector<char>> Aux;
+
+    Aux.resize(8);
+    for(int i = 0; i < 8; i++)
+            Aux[i].resize(8);
+
+    Aux = newMatrix;
+
+            for(int c = 0; c < 8; c++)
+            {
+                for(int l = 0; l < 8; l++)
+                {matrix[c][7-l] = Aux[c][l] & 0x01;}
+            }
 
     //Get Quadrant
     xQuadr = getQuadrant() & 0x01;
@@ -87,7 +104,7 @@ void CLedMatrix::setLedMatrix(vector<vector<char> > newMatrix) {
     {
         for(int lin=0; lin < 4; lin++)
         {
-            this->relativeMatrix[col][lin] = matrix[col + xQuadr*4][lin + yQuadr*4];
+            this->relativeMatrix[col][lin] = matrix[lin + yQuadr*4][col + 4 - xQuadr*4];
         }
     }
 
@@ -104,7 +121,8 @@ void CLedMatrix::setQuadr(int x, int y)
     {
         for(int lin=0; lin < 4; lin++)
         {
-            this->relativeMatrix[col][lin] = matrix[col + x*4][lin + y*4];
+            //this equality has an assimetry because the HW is in wrong orientation
+            this->relativeMatrix[col][lin] = matrix[lin + y*4][col + 4 - x*4];
         }
     }
     writeRelativePattern();

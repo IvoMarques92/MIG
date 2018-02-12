@@ -1,16 +1,21 @@
 #include "CSensors.h"
+#include "CTouchMatrix.h"
+#include "CDistanceSensor.h"
+#include "CHandSlideSensor.h"
 
 #include <iostream>
 
 using namespace std;
 
-CSensors::CSensors() {
-cout << "constr CSensors" << endl;
+CSensors::CSensors()
+{
+    buffer = new char [4];
+    speed = 1;
 }
 
 CSensors::~CSensors()
 {
-
+    delete buffer;
 }
 
 /*******************************************************************************
@@ -29,10 +34,20 @@ void CSensors::initSensors() {
 * Description    : Read all the Hand Slide Sensor
 * Input          : None (void)
 * Output         : None (void)
-* Return		 : None
+* Return		 : char * buffer -> buffer with data from slide sensors
 *******************************************************************************/
-int CSensors::readHandSlideSensor() {
-    return 0;
+char * CSensors::readHandSlideSensor() {
+
+    CHandSlideSensor *caps = CHandSlideSensor::getInstance();
+
+    if(caps->openHandSlideSensor() < 0)
+        perror("Error Open Capacitive Sensors");
+
+    buffer = caps->readHandSlideSensor();
+
+    caps->closeHandSlideSensor();
+
+    return buffer;
 }
 
 /*******************************************************************************
@@ -40,10 +55,11 @@ int CSensors::readHandSlideSensor() {
 * Description    : Read the Distance Sensor
 * Input          : None (void)
 * Output         : None (void)
-* Return		 : None
+* Return		 : float -> speed
 *******************************************************************************/
-uint16_t CSensors::readDistanceSensor() {
-    return 0;
+float CSensors::readDistanceSensor() {
+    CDistanceSensor *distanceIR = CDistanceSensor::getInstance();
+    return distanceIR->getDistanceSensor();
 }
 
 /*******************************************************************************
@@ -53,8 +69,18 @@ uint16_t CSensors::readDistanceSensor() {
 * Output         : None (void)
 * Return		 : None
 *******************************************************************************/
-int CSensors::readTouchMatrix() {
-    return 0;
+char * CSensors::readTouchMatrix() {
+
+    CTouchMatrix *touch =  CTouchMatrix::getInstance();
+
+    if(touch->openTouchMatrix() < 0)
+        perror("erro open the matrix");
+
+    buffer = touch->readTouchMatrix();
+
+    touch->closeTouchMatrix();
+
+    return buffer;
 }
 
 /*******************************************************************************

@@ -18,8 +18,8 @@ CTouchMatrix::~CTouchMatrix()
 * Return		 : None
 *******************************************************************************/
 int CTouchMatrix::openTouchMatrix() {
-    touchIn.open("/dev/touchIN", ios_base::in | ios_base::out);
-    touchOut.open("/dev/touchOUT",ios_base::in | ios_base::out);
+    touchIn.open("/dev/MIGTouchIN", ios_base::in | ios_base::out);
+    touchOut.open("/dev/MIGTouchOUT",ios_base::in | ios_base::out);
     if(!touchIn.is_open())
     {
         perror("Error open the device driver with file /dev/touchIN ! ");
@@ -46,6 +46,11 @@ void CTouchMatrix::closeTouchMatrix() {
     return;
 }
 
+#include <stdio.h>
+#include <iostream>
+
+using namespace std;
+
 /*******************************************************************************
 * Function Name  : readTouchMatrix
 * Description    : Read the Touch Matrix
@@ -63,6 +68,9 @@ char * CTouchMatrix::readTouchMatrix() {
     line = to_string((count++) & 0x03);
 
     touchIn.read(buffer, 4);
+
+    for(int i = 0; i < 4; i++)
+        buffer[i] ^= 0x01;
 
     return buffer;
 }
