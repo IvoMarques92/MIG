@@ -12,7 +12,7 @@
 using namespace std;
 
 extern pthread_cond_t mcDataAnalysisAbsolutePattern;
-extern sem_t sTimerTouchIn, sTimerIRSensor, sTimerSlideSensor, sTeste;
+extern sem_t sTimerTouchIn, sTimerIRSensor, sTimerSlideSensor, sUpdateSound;;
 extern pthread_mutex_t mDataAnalysis4Leds, mDataAnalusisTouchOut, mDataAnalysis2DLedMatrix ;
 extern pthread_t tTouchIn, tIRSensor, tSlideSensor, tSoundGenerater, tAbsolutePattern, tDataAnalysis;
 
@@ -38,6 +38,7 @@ CMig::CMig() {
     sSoundGeneratorDaemon = sem_open(sem_fn, O_CREAT, 0644, 0);
     sem_close(sSoundGeneratorDaemon);
 
+    system("/root/DaemonProcess");
 
     CAbsolutePattern *absolute = CAbsolutePattern::getInstance();
     absolute->clearAbsolutePattern();
@@ -97,13 +98,13 @@ void CMig::initSemaphores() {
     extern sem_t sTimerTouchIn;
     extern sem_t sTimerIRSensor;
     extern sem_t sTimerSlideSensor;
-    extern sem_t sTeste;
+    extern sem_t sUpdateSound;
     //extern sem_t *sSoundGeneratorDaemon;
 
     sem_init (&sTimerTouchIn, 0, 0); //second 0 -> the semaphore is shared between threads of the process
     sem_init (&sTimerIRSensor, 0, 0); //second 0 -> the semaphore is shared between threads of the process
     sem_init (&sTimerSlideSensor, 0, 0); //second 0 -> the semaphore is shared between threads of the process
-    sem_init (&sTeste, 0 , 0);
+    sem_init (&sUpdateSound, 0 , 0);
     //*sSoundGeneratorDaemon;
 
     return;
@@ -309,7 +310,7 @@ void *tTouchInFunction( void *ptr )
             {
                 for(int lin=0; lin < 4; lin++)
                 {
-                    if(auxMatrix[lin + yQuadr*4][col + xQuadr*4] != absolutePattern[lin + yQuadr*4][col + xQuadr*4]) // new data on the matrix if the condition is true
+                    if(auxMatrix[lin + yQuadr*4][col + xQuadr*4] != oldMatrix[lin + yQuadr*4][col + xQuadr*4]) // new data on the matrix if the condition is true
                     {
                         lin = 4; //leave the for
                         col = 4; //leave the for
@@ -327,7 +328,7 @@ void *tTouchInFunction( void *ptr )
                         pthread_mutex_unlock(&mAbsolutePattern);
 
                         //semaphore to tsoundgenerat
-                        sem_post(&sTeste);
+                        sem_post(&sUpdateSound);
                     }
                 }
 
@@ -343,6 +344,7 @@ void *tTouchInFunction( void *ptr )
 
 void *tIRSensorFunction( void *ptr )
 {
+    extern sem_t sTeste;
     CSensors *sensors = CSensors::getInstance();
     float oldSpeed = 0, speed = 0;
     while (1) {
@@ -357,7 +359,8 @@ void *tIRSensorFunction( void *ptr )
         sensors->setSpeed(speed);
 
         if(oldSpeed != speed) // new data
-            pthread_cond_signal(&conIRDataAnalysis);
+             sem_post(&sUpdateSound);
+//            pthread_cond_signal(&conIRDataAnalysis);
 
         pthread_mutex_unlock(&mIRDataAnalysis);
 
@@ -526,7 +529,7 @@ void *tDataAnalysisFunction( void *ptr )
 
 void *tSoundGeneraterFunction( void *ptr )
 {
-    extern sem_t sTeste;
+    extern sem_t sUpdateSound;
     extern sem_t *sSoundGeneratorDaemon;
     extern pthread_mutex_t mAbsolutePattern;
 
@@ -546,7 +549,7 @@ void *tSoundGeneraterFunction( void *ptr )
 
     while (1) {
 
-        sem_wait(&sTeste);
+        sem_wait(&sUpdateSound);
 
         /**+++++++++++++++++++++CGenerateSound+++++++++++++++++++*/
 

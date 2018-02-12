@@ -31,10 +31,10 @@ pthread_t tAbsolutePattern;
 
 /****************************Semaphore identifier**************************/
 
+sem_t sUpdateSound;
 sem_t sTimerTouchIn;
 sem_t sTimerIRSensor;
 sem_t sTimerSlideSensor;
-sem_t sTeste;
 sem_t *sSoundGeneratorDaemon;
 
 /****************************Mutex identifier******************************/
