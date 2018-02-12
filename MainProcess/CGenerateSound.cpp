@@ -149,6 +149,7 @@ string CGenerateSound::changeTempo(float tempo)
     return pathTempoEffect;
 }
 
+
 /*******************************************************************************
 * Function Name  : generateSound
 * Description    : This function accordly with the effect, add and concatenate
@@ -160,11 +161,30 @@ string CGenerateSound::changeTempo(float tempo)
 *******************************************************************************/
 string CGenerateSound::generateSound(unsigned char effect) {
 
+    char aux;
+    vector<vector<char>>  auxMa;
+
+    auxMa.resize(8);
+    for ( int i = 0 ; i < 8 ; i++ )
+        auxMa[i].resize(8);
+
+    auxMa = absoluteMatrix;
+
+    for (int i = 0; i < 8; i++) {
+      for (int j = i+1; j < 8; j++) {
+        if (j != i) {
+            aux = auxMa[i][j];
+            auxMa[i][j] = auxMa[j][i];
+            auxMa[j][i] = aux;
+        }
+      }
+    }
+
     /*Add sound of each element of each column*/
     for(int i = 0; i < 8; i++)
     {
         string columnSound, soxAdd;
-        columnSound = this->getEffects(effect, absoluteMatrix[i]);
+        columnSound = this->getEffects(effect, auxMa[i]);
         if(columnSound == "erro")
             return "erro";
         soxAdd = "sox -m " + empty + empty + columnSound + " /root/sounds/columns/column" + to_string(i) + ".wav";

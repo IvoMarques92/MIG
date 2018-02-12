@@ -38,8 +38,14 @@ CMig::CMig() {
     sSoundGeneratorDaemon = sem_open(sem_fn, O_CREAT, 0644, 0);
     sem_close(sSoundGeneratorDaemon);
 
+
+    CAbsolutePattern *absolute = CAbsolutePattern::getInstance();
+    absolute->clearAbsolutePattern();
+
     CLedMatrix *matrix = CLedMatrix::getInstance();
     matrix->setQuadr(0,0);
+    matrix->setLedMatrix(absolute->getAbsolutePattern());
+
 
 
 }
@@ -162,11 +168,11 @@ void CMig::initSignal()
 
     signal(SIGALRM,ISR);
 
-    // 25ms interrupt
+    // 8ms interrupt
     itv.it_interval.tv_sec = 0;
-    itv.it_interval.tv_usec = 25000;//it_interval -> recarga
+    itv.it_interval.tv_usec = 8000;//it_interval -> recarga
     itv.it_value.tv_sec = 0;
-    itv.it_value.tv_usec = 25000; //only for the first timer expires
+    itv.it_value.tv_usec = 8000; //only for the first timer expires
 
     setitimer(ITIMER_REAL, &itv, NULL);	//ITIMER_REAL is for a SIGALRM
     return;
@@ -181,12 +187,25 @@ void CMig::initSignal()
 *******************************************************************************/
 void CMig::ISR(int sign)
 {
+    static int count = 0;
     if(sign == SIGALRM)
     {
+
          /* Post to the semaphore to sample the sensors.*/
-         sem_post (&sTimerTouchIn);
-         sem_post (&sTimerIRSensor);
-         sem_post (&sTimerSlideSensor);
+        switch (++count) {
+        case 1:
+            sem_post (&sTimerTouchIn);
+            break;
+        case 2:
+            sem_post (&sTimerSlideSensor);
+            break;
+        case 3:
+            sem_post (&sTimerIRSensor);
+            break;
+        default:
+            count = 0;
+            break;
+        }
 
     }
 }
@@ -199,7 +218,7 @@ void *tTouchInFunction( void *ptr )
     char count = 0, matrix[4][4];
     int xQuadr, yQuadr;
 
-    vector<vector<char>> absolutePattern, auxMatrix;
+    vector<vector<char>> absolutePattern, auxMatrix, oldMatrix;
 
     CSensors *sensors = CSensors::getInstance();
     CLedMatrix *ledMatrix = CLedMatrix::getInstance();
@@ -212,6 +231,10 @@ void *tTouchInFunction( void *ptr )
     auxMatrix.resize(8);
     for ( int i = 0 ; i < 8 ; i++ )
         auxMatrix[i].resize(8);
+
+    oldMatrix.resize(8);
+    for ( int i = 0 ; i < 8 ; i++ )
+        oldMatrix[i].resize(8);
 
     while (1) {
         /* Wait for sTimerSlideSensor semaphore. If its value is positive,
@@ -309,6 +332,7 @@ void *tTouchInFunction( void *ptr )
                 }
 
             }
+            oldMatrix = auxMatrix;
 
          }
 
@@ -506,87 +530,118 @@ void *tSoundGeneraterFunction( void *ptr )
     extern sem_t *sSoundGeneratorDaemon;
     extern pthread_mutex_t mAbsolutePattern;
 
+    /**************************testte**************************/
+
+    vector<vector<char>>  absolutePattern;
+
+    absolutePattern.resize(8);
+    for ( int i = 0 ; i < 8 ; i++ )
+        absolutePattern[i].resize(8);
+
+//    auxMatrix.resize(8);
+//    for ( int i = 0 ; i < 8 ; i++ )
+//        auxMatrix[i].resize(8);
+
+    /**************************testte**************************/
+
     while (1) {
 
         sem_wait(&sTeste);
 
         /**+++++++++++++++++++++CGenerateSound+++++++++++++++++++*/
 
-//        char shm_fn[] = "shmDaemon";
-//        char sem_fn[] = "semaphoreDaemon";
+        char shm_fn[] = "shmDaemon";
+        char sem_fn[] = "semaphoreDaemon";
 
-//        CGenerateSound * sound = new CGenerateSound();
-//        CAbsolutePattern *absolute = CAbsolutePattern::getInstance();
+        CGenerateSound * sound = new CGenerateSound();
+        CAbsolutePattern *absolute = CAbsolutePattern::getInstance();
 
-//        pthread_mutex_lock(&mAbsolutePattern);
+        pthread_mutex_lock(&mAbsolutePattern);
 
-//        sound->setAbsolutePattern(absolute->getAbsolutePattern());
+//        absolutePattern = absolute->getAbsolutePattern();
 
-//        pthread_mutex_unlock(&mAbsolutePattern);
+//        //TESTE
+//           cout << "MAtrix Geral:\n";
+//           for(int lin = 0; lin < 8; lin++)
+//           {
 
-//        sound->generateSound(1);
+//               for(int col = 0; col < 8; col++){
 
-//        /**+++++++++++++END of the CGenerateSound+++++++++++++++++*/
-//        /**+++++++++++++++++++Shared Memory+++++++++++++++++++++++*/
-//        CSensors *sensors = CSensors::getInstance();
-//        CConvertWav wav;
+//                  printf("%d ", absolutePattern[lin][col]);
+//               }
+//               cout << endl;
+//           }
 
-//        wav.convertWavFile( sound->changeSpeed(sensors->getSpeed()));
+//           cout << endl;
+//           //END TESTE
 
-//        int size, sharedMemorySize, index;
-//        unsigned int shmdes, mode;
-//        char* shmptr;
-//        char *pt;
+        sound->setAbsolutePattern(absolute->getAbsolutePattern());
 
-//        size = wav.getSubChunk();
-//        pt = (char *) &size;
-//        mode = S_IRWXU|S_IRWXG;
-//        /* Open the shared memory object */
-//        if ( (shmdes = shm_open(shm_fn,O_CREAT|O_RDWR|O_TRUNC, mode)) == -1 ) {
-//             perror("shm_open failure");
-//             exit(-1);
-//        }
-//        /* Preallocate a shared memory area by determine the current
-//        value of a configurable system limit for pagesize*/
-//        sharedMemorySize = 4096 * sysconf(_SC_PAGE_SIZE);
-//        if(ftruncate(shmdes, sharedMemorySize) == -1){
-//            perror("ftruncate failure");
-//            exit(-1);
-//        }
-//        if((shmptr =(char *)mmap(0, sharedMemorySize, PROT_WRITE|PROT_READ, MAP_SHARED,shmdes,0)) == (caddr_t) -1) {
-//            perror("mmap failure");
-//            exit(-1);
-//        }
-//        /* Create a semaphore in locked state */
-//        sSoundGeneratorDaemon = sem_open(sem_fn, O_CREAT, 0644, 0);
-//        if(sSoundGeneratorDaemon == (void*)-1) {
-//          perror("sem_open failure");
-//          exit(-1);
-//        }
+        pthread_mutex_unlock(&mAbsolutePattern);
 
-//        shmptr[0] = *pt++;
-//        shmptr[1] = *pt++;
-//        shmptr[2] = *pt++;
-//        shmptr[3] = *pt;
+        sound->generateSound(1);
 
-//        char *bufferOut = (char *) wav.getPCM();
+        /**+++++++++++++END of the CGenerateSound+++++++++++++++++*/
+        /**+++++++++++++++++++Shared Memory+++++++++++++++++++++++*/
+        CSensors *sensors = CSensors::getInstance();
+        CConvertWav wav;
 
-//        /* Access to the shared memory area */
-//        for(index = 4; index < size + 4; index++) {
-//            shmptr[index]=bufferOut[index - 4];
-//        }
+        wav.convertWavFile( sound->changeSpeed(sensors->getSpeed()));
 
-//        /* Release the semaphore lock */
-//        sem_post(sSoundGeneratorDaemon);
-//        munmap(shmptr, sharedMemorySize);
-//        /* Close the shared memory object */
-//        close(shmdes);
-//        /* Close the Semaphore */
-//        sem_close(sSoundGeneratorDaemon);
-//        /* Delete the shared memory object */
-//        //shm_unlink(shm_fn);
+        int size, sharedMemorySize, index;
+        unsigned int shmdes, mode;
+        char* shmptr;
+        char *pt;
 
-//        /**+++++++++++++END of test of the Shared Memory++++++++++++++++++*/
+        size = wav.getSubChunk();
+        pt = (char *) &size;
+        mode = S_IRWXU|S_IRWXG;
+        /* Open the shared memory object */
+        if ( (shmdes = shm_open(shm_fn,O_CREAT|O_RDWR|O_TRUNC, mode)) == -1 ) {
+             perror("shm_open failure");
+             exit(-1);
+        }
+        /* Preallocate a shared memory area by determine the current
+        value of a configurable system limit for pagesize*/
+        sharedMemorySize = 4096 * sysconf(_SC_PAGE_SIZE);
+        if(ftruncate(shmdes, sharedMemorySize) == -1){
+            perror("ftruncate failure");
+            exit(-1);
+        }
+        if((shmptr =(char *)mmap(0, sharedMemorySize, PROT_WRITE|PROT_READ, MAP_SHARED,shmdes,0)) == (caddr_t) -1) {
+            perror("mmap failure");
+            exit(-1);
+        }
+        /* Create a semaphore in locked state */
+        sSoundGeneratorDaemon = sem_open(sem_fn, O_CREAT, 0644, 0);
+        if(sSoundGeneratorDaemon == (void*)-1) {
+          perror("sem_open failure");
+          exit(-1);
+        }
+
+        shmptr[0] = *pt++;
+        shmptr[1] = *pt++;
+        shmptr[2] = *pt++;
+        shmptr[3] = *pt;
+
+        char *bufferOut = (char *) wav.getPCM();
+
+        /* Access to the shared memory area */
+        for(index = 4; index < size + 4; index++) {
+            shmptr[index]=bufferOut[index - 4];
+        }
+
+        /* Release the semaphore lock */
+        sem_post(sSoundGeneratorDaemon);
+        munmap(shmptr, sharedMemorySize);
+        /* Close the shared memory object */
+        close(shmdes);
+        /* Close the Semaphore */
+        sem_close(sSoundGeneratorDaemon);
+        /* Delete the shared memory object */
+        //shm_unlink(shm_fn);
+
+        /**+++++++++++++END of test of the Shared Memory++++++++++++++++++*/
 
 
     }
@@ -625,7 +680,7 @@ int CMig::run() {
         pthread_join( tSoundGenerater, NULL);
   //      pthread_join( tDataAnalysis, NULL);
         pthread_join( tTouchIn, NULL);
-//        pthread_join( tIRSensor, NULL);
+        pthread_join( tIRSensor, NULL);
         pthread_join( tSlideSensor, NULL);
 //        pthread_join( tAbsolutePattern, NULL);
         return 0;
@@ -671,7 +726,7 @@ int CMig::initThreads() {
     /* define prioratie tIRSensor */
     setupThread(3, &threadAttr, &threadParam);
     pthread_attr_setinheritsched (&threadAttr, PTHREAD_EXPLICIT_SCHED);
-   // errortIRSensor = pthread_create(&tIRSensor,&threadAttr,tIRSensorFunction,NULL);
+    errortIRSensor = pthread_create(&tIRSensor,&threadAttr,tIRSensorFunction,NULL);
 
     /* define prioratie tSlideSensor */
     setupThread(3, &threadAttr, &threadParam);
