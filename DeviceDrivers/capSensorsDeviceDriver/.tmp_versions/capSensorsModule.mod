@@ -1,0 +1,2 @@
+/home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/capSensorsDeviceDriver/capSensorsModule.ko
+/home/cristiano/Desktop/project_programs/MIG/DeviceDrivers/capSensorsDeviceDriver/capSensorsModule.o
