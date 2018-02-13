@@ -11,6 +11,7 @@ CSensors::CSensors()
 {
     buffer = new char [4];
     speed = 1;
+    time = 1;
 }
 
 CSensors::~CSensors()

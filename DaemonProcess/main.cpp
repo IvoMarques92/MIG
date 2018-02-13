@@ -48,3 +48,4 @@ int main()
     speaker->closeSpeaker();
     exit(EXIT_SUCCESS);
 }
+//extern pthread_t tTouchIn, tIRSensor, tSlideSensor, tSoundGenerater, tAbsolutePattern, tDataAnalysis;

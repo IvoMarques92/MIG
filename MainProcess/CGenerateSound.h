@@ -5,6 +5,7 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
 
 using namespace std;
 
@@ -20,6 +21,9 @@ public:
     string changeSpeed(float);
     string changeTempo(float);
     string generateSound(unsigned char);
+    // create a function in C because it's need have one physical address (in C++ in the classes we have a virtual address)
+    //in order to atribute this function to the respetively thread
+    static void *tSoundGeneraterFunction( void *ptr );
 
 private: 
     string pathTempoEffect;

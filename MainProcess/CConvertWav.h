@@ -15,6 +15,7 @@ public:
     int getSubChunk();
     void convertWavFile(string);
 private: 
+
     typedef struct file_header
     {
         char chunk_id[4];
@@ -31,6 +32,7 @@ private:
         char subchunk2_id[4];
         unsigned int subchunk2_size;
     }headerWav;
+
     headerWav wav;
     void* wavPtr;
     void* wavData;

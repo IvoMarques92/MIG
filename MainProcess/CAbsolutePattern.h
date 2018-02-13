@@ -9,8 +9,8 @@ class CAbsolutePattern {
 public: 
     static CAbsolutePattern* getInstance();
     void setAbsolutePattern(vector<vector<char>>);
-    vector<vector<char>> getAbsolutePattern();
     void clearAbsolutePattern();
+    vector<vector<char>> getAbsolutePattern();
 
 private: 
     static CAbsolutePattern* instance;

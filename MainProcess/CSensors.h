@@ -12,11 +12,14 @@ public:
     char *readTouchMatrix();
     float readDistanceSensor();
     float getSpeed(){return speed;}
+    float getTempo(){return time;}
     void setSpeed(float speed1){speed = speed1;}
+    void setTempo(float tempo){time = tempo;}
     void closeSensors();
 
 private:
     float speed;
+    float time;
     char * buffer;
     CSensors();
     ~CSensors();

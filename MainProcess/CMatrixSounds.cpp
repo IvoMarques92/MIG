@@ -1,6 +1,6 @@
 #include "CMatrixSounds.h"
 
-#define EFFECTS 2
+#define EFFECTS 4
 
 
 CMatrixSounds::CMatrixSounds() {
@@ -30,6 +30,26 @@ CMatrixSounds::CMatrixSounds() {
     pattern[1][5] = "/root/sounds/pentatonix/F#3.wav";
     pattern[1][6] = "/root/sounds/pentatonix/E3.wav";
     pattern[1][7] = "/root/sounds/pentatonix/C#3.wav";
+
+    /*Third Pattern*/
+    pattern[2][0] = "/root/sounds/drums/clap.wav";
+    pattern[2][1] = "/root/sounds/drums/bell.wav";
+    pattern[2][2] = "/root/sounds/drums/tube.wav"; //snare
+    pattern[2][3] = "/root/sounds/drums/kick.wav";
+    pattern[2][4] = "/root/sounds/pentatonix/F#4.wav";
+    pattern[2][5] = "/root/sounds/pentatonix/C#4.wav";
+    pattern[2][6] = "/root/sounds/pentatonix/G#3.wav";
+    pattern[2][7] = "/root/sounds/pentatonix/E3.wav";
+
+    /*4º Pattern*/
+    pattern[3][0] = "/root/sounds/drums/clap.wav";
+    pattern[3][1] = "/root/sounds/drums/bell.wav";
+    pattern[3][2] = "/root/sounds/drums/hihat.wav";
+    pattern[3][3] = "/root/sounds/drums/hihat2.wav";
+    pattern[3][4] = "/root/sounds/drums/hihatopen.wav";
+    pattern[3][5] = "/root/sounds/drums/tube.wav";
+    pattern[3][6] = "/root/sounds/drums/snare.wav";
+    pattern[3][7] = "/root/sounds/drums/kick.wav";
 
 
 }

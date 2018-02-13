@@ -20,6 +20,7 @@ class CDistanceSensor {
 public: 
    float getDistanceSensor();
    static CDistanceSensor* getInstance();
+   static void *tIRSensorFunction( void *ptr );
 
 private:
     static CDistanceSensor* instance;

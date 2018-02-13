@@ -22,12 +22,10 @@
 
 /****************************Thread identifier*****************************/
 
-pthread_t tTouchIn;
+pthread_t tTouch;
 pthread_t tIRSensor;
 pthread_t tSlideSensor;
-pthread_t tDataAnalysis;
 pthread_t tSoundGenerater;
-pthread_t tAbsolutePattern;
 
 /****************************Semaphore identifier**************************/
 
@@ -41,16 +39,6 @@ sem_t *sSoundGeneratorDaemon;
 
 pthread_mutex_t mIRDataAnalysis;
 pthread_mutex_t mAbsolutePattern;
-pthread_mutex_t mSlideDataAnalysis;
-pthread_mutex_t mTouchInDataAnalysis;
-pthread_mutex_t mDataAnalysisAbsolutePattern;
 
-/****************************Condition Variable identifier*****************/
-
-pthread_cond_t conIRDataAnalysis;
-pthread_cond_t conSlideDataAnalysis;
-pthread_cond_t conTouchInDataAnalysis;
-pthread_cond_t conDataAnalysisSoundGenerator;
-pthread_cond_t conDataAnalysisAbsolutePattern;
 
 #endif // MAIN_H
