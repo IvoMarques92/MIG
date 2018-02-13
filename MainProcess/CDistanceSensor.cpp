@@ -1,4 +1,8 @@
 #include "CDistanceSensor.h"
+#include <pthread.h>
+#include <semaphore.h>
+
+#include "CSensors.h"
 
 CDistanceSensor::CDistanceSensor() {
     device = "/dev/i2c-1";
@@ -117,6 +121,41 @@ float CDistanceSensor::getDistanceSensor()
     return aux;
 }
 
+/*******************************************************************************
+* Function Name  : tIRSensorFunction
+* Description    : Function Associated to the Thread tIRSensor
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : None (void)
+*******************************************************************************/
+void *CDistanceSensor::tIRSensorFunction(void *ptr)
+{
+    CSensors *sensors = CSensors::getInstance();
+    float oldSpeed = 0, speed = 0;
+    extern sem_t sTimerIRSensor, sUpdateSound;
+    extern pthread_mutex_t mIRDataAnalysis;
+
+    while (1) {
+        /* Wait for sTimerSlideSensor semaphore. If its value is positive,
+        decrement the count and execute the code. If zero, block until a
+        new semaphore post. */
+        sem_wait (&sTimerIRSensor);
+
+        pthread_mutex_lock(&mIRDataAnalysis);
+
+        speed = sensors->readDistanceSensor();
+        sensors->setSpeed(speed);
+
+        if(oldSpeed != speed) // new data
+             sem_post(&sUpdateSound);
+
+
+        pthread_mutex_unlock(&mIRDataAnalysis);
+
+        oldSpeed = speed;
+    }
+}
+
 CDistanceSensor * CDistanceSensor::getInstance()
 {
     if (instance == 0)
@@ -124,4 +163,5 @@ CDistanceSensor * CDistanceSensor::getInstance()
 
     return instance;
 }
+
 

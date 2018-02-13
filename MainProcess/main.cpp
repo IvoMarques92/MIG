@@ -23,9 +23,9 @@ int main()
 
     Mig->initMigAtuators();
     Mig->initMigSensors();
+    Mig->initConditionVariables();
     Mig->initSemaphores();
     Mig->initMutexs();
-    Mig->initConditionVariables();
     Mig->initSignal();
     Mig->run();
 

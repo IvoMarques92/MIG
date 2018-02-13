@@ -46,7 +46,7 @@ void CRelativePattern::writeRelativePattern() {
 
     fd = open(device.c_str(), O_RDWR);
     if(fd < 0)
-        printf("ERROR: Can not open the device0.0");
+        perror("ERROR: Can not open the device0.0");
 
     cleanMatrix();
 
@@ -92,24 +92,24 @@ void CRelativePattern::initSPI()
     //SPI mode
     aux = ioctl(fd, SPI_IOC_WR_MODE, &mode);
     if (aux == -1)
-        {printf("ERROR:can not define spi mode");}
+        {perror("ERROR:can not define spi mode");}
     aux = ioctl(fd, SPI_IOC_RD_MODE, &mode);
     if (aux == -1)
-        {printf("ERROR:can not read spi mode");}
+        {perror("ERROR:can not read spi mode");}
     //SPI - bit number
     aux = ioctl(fd, SPI_IOC_WR_BITS_PER_WORD, &bits);
     if (aux == -1)
-        {printf("ERROR:can not define number of bits");}
+        {perror("ERROR:can not define number of bits");}
     aux = ioctl(fd, SPI_IOC_RD_BITS_PER_WORD, &bits);
     if (aux == -1)
-        {printf("ERROR:can not read number of bits");}
+        {perror("ERROR:can not read number of bits");}
     //SPI - speed
     aux = ioctl(fd, SPI_IOC_WR_MAX_SPEED_HZ, &speed);
     if (aux == -1)
-        {printf("ERROR:can not define speed");}
+        {perror("ERROR:can not define speed");}
     aux = ioctl(fd, SPI_IOC_RD_MAX_SPEED_HZ, &speed);
     if (aux == -1)
-        {printf("ERROR:can not read speed");}
+        {perror("ERROR:can not read speed");}
     return;
 }
 

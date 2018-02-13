@@ -1,11 +1,8 @@
 #include "CActuators.h"
 
-#include <iostream>
-
-using namespace std;
 
 CActuators::CActuators() {
-cout << "constr CActuators" << endl;
+
 }
 
 CActuators::~CActuators()

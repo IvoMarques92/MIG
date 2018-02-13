@@ -1,4 +1,17 @@
+#include "CSensors.h"
+#include "CConvertWav.h"
 #include "CGenerateSound.h"
+#include "CAbsolutePattern.h"
+
+#include <pthread.h>
+#include <semaphore.h>
+
+#include <unistd.h> //sleep
+#include <errno.h>
+#include <sys/types.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <sys/fcntl.h>
 
 const string empty    =   " /root/sounds/empty_sound.wav";
 const string column0  =   " /root/sounds/columns/column0.wav";
@@ -79,18 +92,6 @@ using namespace std;
 void CGenerateSound::setAbsolutePattern(vector<vector<char>> absolutePattern) {
     absoluteMatrix = absolutePattern;
 
-//    for(int col = 0; col < 8; col++)
-//    {
-
-//        for(int lin = 0; lin < 8; lin++){
-
-//           printf("%d ", absoluteMatrix[col][lin]);
-//        }
-//        cout << endl;
-//    }
-
-//    cout << endl;
-
     return;
 }
 
@@ -135,7 +136,7 @@ string CGenerateSound::changeTempo(float tempo)
     string soxTempo;
     if(tempo > 8) tempo = 8;
 
-    if(tempo < 1)
+    if(tempo <= 1)
     {
         pathTempoEffect = pathWavAbsolutePatternFIle;
     }
@@ -170,6 +171,7 @@ string CGenerateSound::generateSound(unsigned char effect) {
 
     auxMa = absoluteMatrix;
 
+    //transposed matrix
     for (int i = 0; i < 8; i++) {
       for (int j = i+1; j < 8; j++) {
         if (j != i) {
@@ -199,4 +201,102 @@ string CGenerateSound::generateSound(unsigned char effect) {
     pathWavAbsolutePatternFIle = "/root/sounds/absoluteMatrixSounds/soundEffect" + to_string(effect) + ".wav";
 
     return pathWavAbsolutePatternFIle;
+}
+
+/*******************************************************************************
+* Function Name  : tSoundGeneraterFunction
+* Description    : Function Associated to the Thread tSoundGenerater
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : None (void)
+*******************************************************************************/
+void *CGenerateSound::tSoundGeneraterFunction(void *ptr)
+{
+    extern sem_t sUpdateSound;
+    extern sem_t *sSoundGeneratorDaemon;
+    extern pthread_mutex_t mAbsolutePattern;
+
+    int size, sharedMemorySize, index;
+    unsigned int shmdes, mode;
+    char* shmptr;
+    char *pt;
+
+    char shm_fn[] = "shmDaemon";
+    char sem_fn[] = "semaphoreDaemon";
+
+    CGenerateSound * sound = new CGenerateSound();
+    CAbsolutePattern *absolute = CAbsolutePattern::getInstance();
+    CSensors *sensors = CSensors::getInstance();
+    CConvertWav wav;
+
+    while (1) {
+
+        sem_wait(&sUpdateSound);
+
+        /**+++++++++++++++++++++CGenerateSound+++++++++++++++++++*/
+
+        pthread_mutex_lock(&mAbsolutePattern);
+
+        sound->setAbsolutePattern(absolute->getAbsolutePattern());
+
+        pthread_mutex_unlock(&mAbsolutePattern);
+
+        sound->generateSound(1);
+
+        /**+++++++++++++END of the CGenerateSound+++++++++++++++++*/
+
+        /**+++++++++++++++++++Shared Memory+++++++++++++++++++++++*/
+
+        wav.convertWavFile( sound->changeTempo(sensors->getSpeed()));
+
+
+        size = wav.getSubChunk();
+        pt = (char *) &size;
+        mode = S_IRWXU|S_IRWXG;
+        /* Open the shared memory object */
+        if ( (shmdes = shm_open(shm_fn,O_CREAT|O_RDWR|O_TRUNC, mode)) == -1 ) {
+             perror("shm_open failure");
+             exit(-1);
+        }
+        /* Preallocate a shared memory area by determine the current
+        value of a configurable system limit for pagesize*/
+        sharedMemorySize = 4096 * sysconf(_SC_PAGE_SIZE);
+        if(ftruncate(shmdes, sharedMemorySize) == -1){
+            perror("ftruncate failure");
+            exit(-1);
+        }
+        if((shmptr =(char *)mmap(0, sharedMemorySize, PROT_WRITE|PROT_READ, MAP_SHARED,shmdes,0)) == (caddr_t) -1) {
+            perror("mmap failure");
+            exit(-1);
+        }
+        /* Create a semaphore in locked state */
+        sSoundGeneratorDaemon = sem_open(sem_fn, O_CREAT, 0644, 0);
+        if(sSoundGeneratorDaemon == (void*)-1) {
+          perror("sem_open failure");
+          exit(-1);
+        }
+
+        shmptr[0] = *pt++;
+        shmptr[1] = *pt++;
+        shmptr[2] = *pt++;
+        shmptr[3] = *pt;
+
+        char *bufferOut = (char *) wav.getPCM();
+
+        /* Access to the shared memory area */
+        for(index = 4; index < size + 4; index++) {
+            shmptr[index]=bufferOut[index - 4];
+        }
+
+        /* Release the semaphore lock */
+        sem_post(sSoundGeneratorDaemon);
+        munmap(shmptr, sharedMemorySize);
+        /* Close the shared memory object */
+        close(shmdes);
+        /* Close the Semaphore */
+        sem_close(sSoundGeneratorDaemon);
+        /* Delete the shared memory object */
+        //shm_unlink(shm_fn);
+        /**+++++++++++++END of test of the Shared Memory++++++++++++++++++*/
+    }
 }
