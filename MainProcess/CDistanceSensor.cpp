@@ -82,20 +82,15 @@ float CDistanceSensor::readCDistanceSensor() {
 
     distance =(readBuffer[0]<<8 | readBuffer[1]);
 
+    float k = 7/0.2;
+
+
     if(distance < 6000)
-        value = 1;
-    else if(distance < 7500)
-        value = 1.5;
-    else if(distance < 9500)
-        value = 2;
-    else if(distance < 11000)
-        value = 2.5;
-    else if(distance < 13000)
-        value = 3;
-    else if(distance < 16000)
-        value = 3.5;
-    else
         value = 4;
+    else
+    {
+        value = (0.2 * (((distance - 6000)*k)/14000)) + 1;
+    }
 
     return value;
 }
@@ -148,7 +143,6 @@ void *CDistanceSensor::tIRSensorFunction(void *ptr)
 
         if(oldSpeed != speed) // new data
              sem_post(&sUpdateSound);
-
 
         pthread_mutex_unlock(&mIRDataAnalysis);
 

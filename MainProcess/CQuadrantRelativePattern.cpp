@@ -16,6 +16,13 @@ int CQuadrantRelativePattern::getQuadrant()
     return layer;
 }
 
+/*******************************************************************************
+* Function Name  : writeQuadrant
+* Description    : Write in the 4 leds to show the quadrant
+* Input          : None (void)
+* Output         : None (void)
+* Return		 : None
+*******************************************************************************/
 void CQuadrantRelativePattern::writeQuadrant() {
 
     char tx[] = {(char)(layer + 48),'\0'};

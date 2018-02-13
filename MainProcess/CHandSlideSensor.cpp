@@ -67,20 +67,18 @@ char * CHandSlideSensor::readHandSlideSensor() {
 *******************************************************************************/
 void *CHandSlideSensor::tSlideSensorFunction(void *ptr)
 {
+    CSensors *sensors = CSensors::getInstance();
     extern sem_t sTimerSlideSensor;
+
     while (1) {
         /* Wait for sTimerSlideSensor semaphore. If its value is positive,
         decrement the count and execute the code. If zero, block until a
         new semaphore post. */
         sem_wait (&sTimerSlideSensor);
 
-        processingDataSlide();
+        processingDataSlide(sensors->readHandSlideSensor());
 
-//        pthread_mutex_lock(&mSlideDataAnalysis);
 
-//        pthread_cond_signal(&conSlideDataAnalysis);
-
-//        pthread_mutex_unlock(&mSlideDataAnalysis);
     }
 }
 
@@ -91,17 +89,16 @@ void *CHandSlideSensor::tSlideSensorFunction(void *ptr)
 * Output         : None (void)
 * Return		 : None (void)
 *******************************************************************************/
-void CHandSlideSensor::processingDataSlide()
+void CHandSlideSensor::processingDataSlide(char * slideSensors)
 {
     static char * buffer = new char[4], cap1 = 0, cap2 = 0, cap3 = 0, cap4 = 0;
     static char old1 = 0, old2 = 0, old3 = 0, old4 = 0;
     static int count = 0;
     static int x = 0, y = 0;
 
-    CSensors *sensors = CSensors::getInstance();
     CLedMatrix *matrix = CLedMatrix::getInstance();
 
-    buffer = sensors->readHandSlideSensor();
+    buffer = slideSensors;
 
     cap1 = buffer[0];
     cap2 = buffer[1];

@@ -77,13 +77,13 @@ char * CTouchMatrix::readTouchMatrix() {
 }
 
 /*******************************************************************************
-* Function Name  : tTouchInFunction
+* Function Name  : tTouchFunction
 * Description    : Function Associated to the Thread tTouchIn
 * Input          : None (void)
 * Output         : None (void)
 * Return		 : None (void)
 *******************************************************************************/
-void *CTouchMatrix::tTouchInFunction(void *ptr)
+void *CTouchMatrix::tTouchFunction(void *ptr)
 {
     char * buffer = new char [4];
     char count = 0, matrix[4][4];
@@ -120,7 +120,9 @@ void *CTouchMatrix::tTouchInFunction(void *ptr)
         for(int i = 0; i < 4; i++){
             matrix[count][i] = buffer[i];
         }
+
         count++;
+
         if(count == 4)
         {
             count = 0;

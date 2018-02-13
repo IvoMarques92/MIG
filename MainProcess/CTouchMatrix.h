@@ -14,7 +14,7 @@ public:
     char *readTouchMatrix();
     // create a function in C because it's need have one physical address (in C++ in the classes we have a virtual address)
     //in order to atribute this function to the respetively thread
-    static void *tTouchInFunction( void *ptr );
+    static void *tTouchFunction( void *ptr );
 private: 
     vector<int> soundWave;
     fstream touchIn, touchOut;

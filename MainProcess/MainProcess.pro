@@ -7,7 +7,6 @@ QMAKE_LFLAGS += -lasound -lpthread
 
 SOURCES += main.cpp \
     CAbsolutePattern.cpp \
-    CActuators.cpp \
     CConvertWav.cpp \
     CDistanceSensor.cpp \
     CGenerateSound.cpp \
@@ -18,7 +17,6 @@ SOURCES += main.cpp \
     CQuadrantRelativePattern.cpp \
     CRelativePattern.cpp \
     CSensors.cpp \
-    CSpeaker.cpp \
     CTouchMatrix.cpp
 
 target.path = /root
@@ -26,7 +24,6 @@ INSTALLS += target
 
 HEADERS += \
     CAbsolutePattern.h \
-    CActuators.h \
     CConvertWav.h \
     CDistanceSensor.h \
     CGenerateSound.h \
@@ -37,6 +34,5 @@ HEADERS += \
     CQuadrantRelativePattern.h \
     CRelativePattern.h \
     CSensors.h \
-    CSpeaker.h \
     CTouchMatrix.h \
     main.h

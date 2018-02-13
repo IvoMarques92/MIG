@@ -241,13 +241,13 @@ void *CGenerateSound::tSoundGeneraterFunction(void *ptr)
 
         pthread_mutex_unlock(&mAbsolutePattern);
 
-        sound->generateSound(1);
+        sound->generateSound(2);
 
         /**+++++++++++++END of the CGenerateSound+++++++++++++++++*/
 
         /**+++++++++++++++++++Shared Memory+++++++++++++++++++++++*/
 
-        wav.convertWavFile( sound->changeTempo(sensors->getSpeed()));
+        wav.convertWavFile( sound->changeSpeed(sensors->getSpeed()));
 
 
         size = wav.getSubChunk();

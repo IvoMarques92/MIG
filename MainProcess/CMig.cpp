@@ -1,7 +1,6 @@
 #include "CMig.h"
 #include "CSensors.h"
 #include "CLedMatrix.h"
-#include "CActuators.h"
 #include "CConvertWav.h"
 #include "CTouchMatrix.h"
 #include "CGenerateSound.h"
@@ -36,20 +35,6 @@ CMig::~CMig()
 
 }
 
-/*******************************************************************************
-* Function Name  : initMigAtuators
-* Description    : Initialize Atuators
-* Input          : None (void)
-* Output         : None (void)
-* Return		 : None
-*******************************************************************************/
-void CMig::initMigAtuators() {
-
-    CActuators* actuators = CActuators::getInstance();
-    actuators->initActuators();
-
-    return;
-}
 
 /*******************************************************************************
 * Function Name  : initMigSensors
@@ -99,40 +84,11 @@ void CMig::initMutexs()
 {
     extern pthread_mutex_t mIRDataAnalysis;
     extern pthread_mutex_t mAbsolutePattern;
-    extern pthread_mutex_t mSlideDataAnalysis;
-    extern pthread_mutex_t mTouchInDataAnalysis;
-    extern pthread_mutex_t mDataAnalysisAbsolutePattern;
 
     mIRDataAnalysis = PTHREAD_MUTEX_INITIALIZER;
     mAbsolutePattern = PTHREAD_MUTEX_INITIALIZER;
-    mSlideDataAnalysis = PTHREAD_MUTEX_INITIALIZER;
-    mTouchInDataAnalysis = PTHREAD_MUTEX_INITIALIZER;
-    mDataAnalysisAbsolutePattern = PTHREAD_MUTEX_INITIALIZER;
-
 }
 
-/*******************************************************************************
-* Function Name  : initConditionVariables
-* Description    : Initialize Condition Variables
-* Input          : None (void)
-* Output         : None (void)
-* Return		 : None
-********************************************************************************/
-void CMig::initConditionVariables()
-{
-
-    extern pthread_cond_t conIRDataAnalysis;
-    extern pthread_cond_t conSlideDataAnalysis;
-    extern pthread_cond_t conTouchInDataAnalysis;
-    extern pthread_cond_t conDataAnalysisSoundGenerator;
-    extern pthread_cond_t conDataAnalysisAbsolutePattern;
-
-    conIRDataAnalysis = PTHREAD_COND_INITIALIZER;
-    conSlideDataAnalysis = PTHREAD_COND_INITIALIZER;
-    conTouchInDataAnalysis = PTHREAD_COND_INITIALIZER;
-    conDataAnalysisSoundGenerator = PTHREAD_COND_INITIALIZER;
-    conDataAnalysisAbsolutePattern = PTHREAD_COND_INITIALIZER;
-}
 
 /*******************************************************************************
 * Function Name  : initSignal
@@ -190,27 +146,6 @@ void CMig::ISR(int sign)
     }
 }
 
-void *tAbsolutePatternFunction( void *ptr )
-{
-    extern pthread_cond_t conDataAnalysisAbsolutePattern;
-    extern pthread_mutex_t mAbsolutePattern;
-    CLedMatrix *matrix = CLedMatrix::getInstance();
-    CAbsolutePattern *absolute = CAbsolutePattern::getInstance();
-
-    while (1) {
-
-        pthread_mutex_lock(&mAbsolutePattern);
-
-        pthread_cond_wait(&conDataAnalysisAbsolutePattern, &mAbsolutePattern );
-
-        matrix->setLedMatrix(absolute->getAbsolutePattern());
-
-        pthread_mutex_unlock(&mAbsolutePattern);
-
-        matrix->writeLedMatrix();
-    }
-}
-
 /*******************************************************************************
 * Function Name  : run
 * Description    : Run  the projects
@@ -219,15 +154,13 @@ void *tAbsolutePatternFunction( void *ptr )
 * Return		 : None
 *******************************************************************************/
 int CMig::run() {
-    extern pthread_t tTouchIn, tIRSensor, tSlideSensor, tSoundGenerater;
+    extern pthread_t tTouch, tIRSensor, tSlideSensor, tSoundGenerater;
     if(!initThreads())
     {
         pthread_join( tSoundGenerater, NULL);
-  //      pthread_join( tDataAnalysis, NULL);
-        pthread_join( tTouchIn, NULL);
+        pthread_join( tTouch, NULL);
         pthread_join( tIRSensor, NULL);
         pthread_join( tSlideSensor, NULL);
-//        pthread_join( tAbsolutePattern, NULL);
         return 0;
     }
     else
@@ -244,8 +177,8 @@ int CMig::run() {
 *******************************************************************************/
 int CMig::initThreads() {
 
-    int errortTouchIn, errortIRSensor, errortSlideSensor, errortSoundGenerater, errortAbsolutePattern, errortDataAnalysis;
-    extern pthread_t tTouchIn, tIRSensor, tSlideSensor, tSoundGenerater;
+    int errortTouch, errortIRSensor, errortSlideSensor, errortSoundGenerater;
+    extern pthread_t tTouch, tIRSensor, tSlideSensor, tSoundGenerater;
 
     CTouchMatrix *touch = CTouchMatrix::getInstance();
     CHandSlideSensor *slideSensor = CHandSlideSensor::getInstance();
@@ -259,38 +192,28 @@ int CMig::initThreads() {
     pthread_attr_init(&threadAttr);
     pthread_attr_getschedparam(&threadAttr, &threadParam);
     pthread_attr_getschedpolicy(&threadAttr, &threadPolicy);
+    /* define prioratie tTouch */
+
+    setupThread(1, &threadAttr, &threadParam);
+    pthread_attr_setinheritsched (&threadAttr, PTHREAD_EXPLICIT_SCHED);
+    errortTouch = pthread_create(&tTouch,&threadAttr,touch->tTouchFunction,NULL);
+
+    /* define prioratie tIRSensor */
+    setupThread(2, &threadAttr, &threadParam);
+    pthread_attr_setinheritsched (&threadAttr, PTHREAD_EXPLICIT_SCHED);
+    errortIRSensor = pthread_create(&tIRSensor,&threadAttr,distanceSensor->tIRSensorFunction,NULL);
+
+    /* define prioratie tSlideSensor */
+    setupThread(2, &threadAttr, &threadParam);
+    pthread_attr_setinheritsched (&threadAttr, PTHREAD_EXPLICIT_SCHED);
+    errortSlideSensor = pthread_create(&tSlideSensor,&threadAttr,slideSensor->tSlideSensorFunction,NULL);
 
     /* define prioratie tSoundGenerater */
     setupThread(3, &threadAttr, &threadParam);
     pthread_attr_setinheritsched (&threadAttr, PTHREAD_EXPLICIT_SCHED);
     errortSoundGenerater = pthread_create(&tSoundGenerater,&threadAttr,generateSoundc.tSoundGeneraterFunction,NULL);
 
-    /* define prioratie tDataAnalysis */
-    setupThread(2, &threadAttr, &threadParam);
-    pthread_attr_setinheritsched (&threadAttr, PTHREAD_EXPLICIT_SCHED);
-    //errortDataAnalysis = pthread_create(&tDataAnalysis,&threadAttr,tDataAnalysisFunction,NULL);
-
-    /* define prioratie tTouchIn */
-    setupThread(1, &threadAttr, &threadParam);
-    pthread_attr_setinheritsched (&threadAttr, PTHREAD_EXPLICIT_SCHED);
-    errortTouchIn = pthread_create(&tTouchIn,&threadAttr,touch->tTouchInFunction,NULL);
-
-    /* define prioratie tIRSensor */
-    setupThread(3, &threadAttr, &threadParam);
-    pthread_attr_setinheritsched (&threadAttr, PTHREAD_EXPLICIT_SCHED);
-    errortIRSensor = pthread_create(&tIRSensor,&threadAttr,distanceSensor->tIRSensorFunction,NULL);
-
-    /* define prioratie tSlideSensor */
-    setupThread(3, &threadAttr, &threadParam);
-    pthread_attr_setinheritsched (&threadAttr, PTHREAD_EXPLICIT_SCHED);
-    errortSlideSensor = pthread_create(&tSlideSensor,&threadAttr,slideSensor->tSlideSensorFunction,NULL);
-
-    /* define prioratie tAbsolutePattern */
-    setupThread(4, &threadAttr, &threadParam);
-    pthread_attr_setinheritsched (&threadAttr, PTHREAD_EXPLICIT_SCHED);
-    //errortAbsolutePattern = pthread_create(&tAbsolutePattern,&threadAttr,tAbsolutePatternFunction,NULL);
-
-    if((errortDataAnalysis != 0)&&(errortTouchIn != 0)&&(errortIRSensor != 0)&&(errortSlideSensor != 0)&&(errortSoundGenerater != 0)&&(errortAbsolutePattern != 0))
+    if((errortTouch != 0)&&(errortIRSensor != 0)&&(errortSlideSensor != 0)&&(errortSoundGenerater != 0))
     {
         perror("Creation Threads failed.");
         return -1;

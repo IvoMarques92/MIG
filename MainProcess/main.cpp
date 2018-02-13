@@ -12,7 +12,6 @@
  *
  *********************************************************************************************************************************************************************/
 
-#include <iostream>
 #include "CMig.h"
 #include "main.h"
 
@@ -21,9 +20,7 @@ int main()
 
     CMig* Mig = CMig::getInstance();
 
-    Mig->initMigAtuators();
     Mig->initMigSensors();
-    Mig->initConditionVariables();
     Mig->initSemaphores();
     Mig->initMutexs();
     Mig->initSignal();

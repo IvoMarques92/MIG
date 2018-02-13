@@ -20,7 +20,7 @@ private:
     CHandSlideSensor();
     ~CHandSlideSensor();
     // create a function in C to be used by the tSlideSensorFunction
-    static void processingDataSlide();
+    static void processingDataSlide(char *);
     fstream capFile;
     char * buffer;
 };
