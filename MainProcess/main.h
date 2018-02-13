@@ -12,19 +12,33 @@
  *
  *********************************************************************************************************************************************************************/
 
-#include "CMig.h"
-#include "main.h"
+#ifndef MAIN_H
+#define MAIN_H
 
-int main()
-{
+#include <mqueue.h>
+#include <pthread.h>
+#include <semaphore.h>
 
-    CMig* Mig = CMig::getInstance();
 
-    Mig->initMigSensors();
-    Mig->initSemaphores();
-    Mig->initMutexs();
-    Mig->initSignal();
-    Mig->run();
+/****************************Thread identifier*****************************/
 
-    pthread_exit(NULL);
-}
+pthread_t tTouch;
+pthread_t tIRSensor;
+pthread_t tSlideSensor;
+pthread_t tSoundGenerater;
+
+/****************************Semaphore identifier**************************/
+
+sem_t sUpdateSound;
+sem_t sTimerTouchIn;
+sem_t sTimerIRSensor;
+sem_t sTimerSlideSensor;
+sem_t *sSoundGeneratorDaemon;
+
+/****************************Mutex identifier******************************/
+
+pthread_mutex_t mIRDataAnalysis;
+pthread_mutex_t mAbsolutePattern;
+
+
+#endif // MAIN_H
